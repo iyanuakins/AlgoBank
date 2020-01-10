@@ -8,6 +8,7 @@ namespace AlgoBank
     {
         private string _type;
         private double _amount;
+        private string _currency;
         private DateTime _DateCreated = new DateTime();
         private string _SourceAccount;
         private string _SourceAccountType;
@@ -16,10 +17,11 @@ namespace AlgoBank
         private string _TransactionID;
         public static int TransactionCounter = 10260187;
 
-        public Transaction(string __type, double __amount, string __SourceAccount, string __SourceAccountType, string __DestinationAccount, string __DestinationAccountType)
+        public Transaction(string __type, double __amount, string __currency, string __SourceAccount, string __SourceAccountType, string __DestinationAccount, string __DestinationAccountType)
         {
             _type = __type;
             _amount = __amount;
+            _currency = __currency;
             _SourceAccount = __SourceAccount;
             _SourceAccountType = __SourceAccountType;
             _DestinationAccount = __DestinationAccount;

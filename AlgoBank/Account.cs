@@ -6,26 +6,27 @@ namespace AlgoBank
 {
     class Account
     {
-        private string type;
-        private string number;
-        private string currency;
-        private double balance = 0.0;
-        private DateTime DateCreated = new DateTime();
-        private int owner;
-        private List<int> transactions = null;
-        private int MinimumBalance = 0;
-        public static int AccountPartOne = 10;
+        private string _type;
+        private string _number;
+        private string _currency;
+        private double _balance = 0.0;
+        private DateTime _DateCreated = new DateTime();
+        private int _owner;
+        private List<Transaction> _transactions = null;
+        private int _MinimumBalance = 0;
+        public static int AccountPrefix = 10;
 
-        public Account(int _owner)
+        public Account(int owner)
         {
-            owner = _owner;
-            string[] options = SelectType();
-            type = options[0];
-            currency = options[1];
-            MinimumBalance = Convert.ToInt32(options[2]);
+            _owner = owner;
+            string[] options = SelectOptions();
+            _type = options[0];
+            _currency = options[1];
+            _MinimumBalance = Convert.ToInt32(options[2]);
+            _number = GenerateAccount();
         }
 
-        public string[] SelectType()
+        public string[] SelectOptions()
         {
             bool IsValid = false;
             string[] options = new string[3];
@@ -87,53 +88,80 @@ namespace AlgoBank
             } while (!IsValid);
         }
 
+        public string GenerateAccount()
+        {
+            Random random = new Random();
+            int RandomPartOne = random.Next(10, 99);
+            int RandomPartTwo = random.Next(10, 99);
+            int RandomPartThree = random.Next(10, 99);
+            int prefix = (AccountPrefix % 99) < 10 ? AccountPrefix % 99 + 10 : AccountPrefix % 99;
+            return $"00{prefix}{RandomPartOne}{RandomPartTwo}{RandomPartThree}";
+        }
+
         public string GetBalance()
         {
-            return $"{currency}{balance}";
+            return $"{_currency}{_balance}";
         }
 
         public object deposit(double amount)
         {
             if (amount > 0)
             {
-                balance += amount;
+                _balance += amount;
+                Transaction TransactionDetails = new Transaction("deposit", amount, _currency, _number, _type, "", "");
+                _transactions.Add(TransactionDetails);
+                BankLedger.transactions.Add(TransactionDetails);
                 return new
                 {
                     status = true,
-                    message = $"Deposit of {currency}{amount} is successful.\n New balance is: {currency}{balance}"
+                    message = $"Deposit of {_currency}{amount} is successful.\n New balance is: {_currency}{_balance}"
                 };
             }
 
             return new
             {
                 status = false,
-                message = $"Mininum amount to deposit is {currency}1"
+                message = $"Mininum amount to deposit is {_currency}1"
             };
         }
+
         public object withdraw(double amount)
         {
             if (amount > 0)
             {
-                if (balance - MinimumBalance - amount >= 0)
+                if (_balance - _MinimumBalance - amount >= 0)
                 {
-                    balance -= amount;
+                    _balance -= amount;
+                    Transaction TransactionDetails = new Transaction("withdrawal", amount, _currency, "", "", _number, _type );
+                    _transactions.Add(TransactionDetails);
+                    BankLedger.transactions.Add(TransactionDetails);
                     return new
                     {
                         status = true,
-                        message = $"Withdrawal of {currency}{amount} is successful.\n New balance is: {currency}{balance}"
+                        message = $"Withdrawal of {_currency}{amount} is successful.\n New balance is: {_currency}{_balance}"
                     };
                 }
+
+                if (_balance < _MinimumBalance)
+                {
+                    return new
+                    {
+                        status = false,
+                        message = $"Your account balance is below minimum balance of {_currency}{_MinimumBalance}"
+                    };
+                }
+
                 return new
                 {
                     status = false,
-                    message = $"Insufficient balance your withdrawable balance is: {currency}{(balance - MinimumBalance)}"
+                    message = $"Insufficient balance your withdrawable balance is: {_currency}{(_balance - _MinimumBalance)}"
                 };
             }
 
             return new
             {
                 status = false,
-                message = $"You cannot withdraw below {currency}1"
+                message = $"You cannot withdraw below {_currency}1"
             };
         }
 
