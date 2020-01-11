@@ -20,6 +20,16 @@ namespace AlgoBank
         public static double EURToNaira = 403.14;
         public static double GBPToNaira = 473.5;
 
+        public string Type { get => _type; }
+        public string Number { get => _number; }
+        public string Currency { get => _currency; }
+        public double Balance { get => _balance; set => _balance = value; }
+        public DateTime DateCreated { get => _DateCreated; }
+        public int Owner { get => _owner; }
+        public string OwnerName { get => _OwnerName; set => _OwnerName = value; }
+        internal List<Transaction> Transactions { get => _transactions; set => _transactions.AddRange(value); }
+        public int MinimumBalance { get => _MinimumBalance; }
+
         public Account(int owner, string OwnerName)
         {
             _owner = owner;
@@ -128,7 +138,7 @@ namespace AlgoBank
                     amount *= rate;
                 }
                 _balance += amount;
-                if(depositor == "self")
+                if (depositor == "self")
                 {
                     depositor = _OwnerName;
                 }
@@ -200,8 +210,12 @@ namespace AlgoBank
         public object transfer(double amount, string DestinationAccount)
         {
             if (amount > 0)
-            {   
-                BankLegder
+            {
+                Account DestinationAccountDetails = null;
+                foreach (Account account in BankLedger.AllAccounts)
+                {
+                    if (account.)
+                }
                 double rate = 1;
                 if (_type == "domiciliary")
                 {
