@@ -10,15 +10,20 @@ namespace AlgoBank
         private string _number;
         private string _currency;
         private double _balance = 0.0;
-        private DateTime _DateCreated = new DateTime();
+        private DateTime _DateCreated = DateTime.Now;
         private int _owner;
+        private string _OwnerName = "";
         private List<Transaction> _transactions = null;
         private int _MinimumBalance = 0;
         public static int AccountPrefix = 10;
+        public static double USDToNaira = 362.5;
+        public static double EURToNaira = 403.14;
+        public static double GBPToNaira = 473.5;
 
-        public Account(int owner)
+        public Account(int owner, string OwnerName)
         {
             _owner = owner;
+            _OwnerName = OwnerName;
             string[] options = SelectOptions();
             _type = options[0];
             _currency = options[1];
@@ -44,7 +49,7 @@ namespace AlgoBank
                 {
                     if (IsValid && (1 <= SelectedOption && SelectedOption <= 3))
                     {
-                        if(SelectedOption == 3)
+                        if (SelectedOption == 3)
                         {
                             bool IsSecondInputValid = false;
                             do
@@ -75,7 +80,7 @@ namespace AlgoBank
                     }
                     else
                     {
-                        IsValid = false; 
+                        IsValid = false;
                         throw new Exception("Please enter correct input");
                     }
                 }
@@ -100,21 +105,40 @@ namespace AlgoBank
 
         public string GetBalance()
         {
-            return $"{_currency}{_balance}";
+            double rate = 1;
+            if (_type == "domiciliary")
+            {
+                rate = _currency == "USD" ? BankLegder.USDToNaira :
+                                    _currency == "EUR" ? BankLegder.EURToNaira : BankLegder.GBPToNaira;
+                amount *= rate;
+            }
+            return $"{_currency}{(_balance / rate)}";
         }
 
-        public object deposit(double amount)
+        public object deposit(double amount, string depositor = "self")
         {
+
             if (amount > 0)
             {
+                double rate = 1;
+                if (_type == "domiciliary")
+                {
+                    rate = _currency == "USD" ? BankLegder.USDToNaira :
+                                        _currency == "EUR" ? BankLegder.EURToNaira : BankLegder.GBPToNaira;
+                    amount *= rate;
+                }
                 _balance += amount;
-                Transaction TransactionDetails = new Transaction("deposit", amount, _currency, _number, _type, "", "");
+                if(depositor == "self")
+                {
+                    depositor = _OwnerName;
+                }
+                Transaction TransactionDetails = new Transaction("deposit", (amount / rate), _currency, _number, _type, "", "", depositor, _OwnerName);
                 _transactions.Add(TransactionDetails);
                 BankLedger.transactions.Add(TransactionDetails);
                 return new
                 {
                     status = true,
-                    message = $"Deposit of {_currency}{amount} is successful.\n New balance is: {_currency}{_balance}"
+                    message = $"Deposit of {_currency}{amount / rate} is successful.\n New balance is: {_currency}{(_balance / rate)}"
                 };
             }
 
@@ -129,16 +153,24 @@ namespace AlgoBank
         {
             if (amount > 0)
             {
+                double rate = 1;
+                if (_type == "domiciliary")
+                {
+                    rate = _currency == "USD" ? BankLegder.USDToNaira :
+                                        _currency == "EUR" ? BankLegder.EURToNaira : BankLegder.GBPToNaira;
+                    amount *= rate;
+                }
+
                 if (_balance - _MinimumBalance - amount >= 0)
                 {
                     _balance -= amount;
-                    Transaction TransactionDetails = new Transaction("withdrawal", amount, _currency, "", "", _number, _type );
+                    Transaction TransactionDetails = new Transaction("withdrawal", (amount / rate), _currency, "", "", _number, _type, "", _OwnerName);
                     _transactions.Add(TransactionDetails);
                     BankLedger.transactions.Add(TransactionDetails);
                     return new
                     {
                         status = true,
-                        message = $"Withdrawal of {_currency}{amount} is successful.\n New balance is: {_currency}{_balance}"
+                        message = $"Withdrawal of {_currency}{amount / rate} is successful.\n New balance is: {_currency}{(_balance / rate)}"
                     };
                 }
 
@@ -154,7 +186,7 @@ namespace AlgoBank
                 return new
                 {
                     status = false,
-                    message = $"Insufficient balance your withdrawable balance is: {_currency}{(_balance - _MinimumBalance)}"
+                    message = $"Insufficient balance your withdrawable balance is: {_currency}{(_balance - _MinimumBalance / rate)}"
                 };
             }
 
@@ -165,6 +197,53 @@ namespace AlgoBank
             };
         }
 
+        public object transfer(double amount, string DestinationAccount)
+        {
+            if (amount > 0)
+            {   
+                BankLegder
+                double rate = 1;
+                if (_type == "domiciliary")
+                {
+                    rate = _currency == "USD" ? BankLegder.USDToNaira :
+                                _currency == "EUR" ? BankLegder.EURToNaira : BankLegder.GBPToNaira;
+                    amount *= rate;
+                }
 
+                if (_balance - _MinimumBalance - amount >= 0)
+                {
+                    _balance -= amount;
+                    Transaction TransactionDetails = new Transaction("transfer", (amount / rate), _currency, "", "", _number, _type);
+                    _transactions.Add(TransactionDetails);
+                    BankLedger.transactions.Add(TransactionDetails);
+                    return new
+                    {
+                        status = true,
+                        message = $"Withdrawal of {_currency}{amount / rate} is successful.\n New balance is: {_currency}{(_balance / rate)}"
+                    };
+                }
+
+                if (_balance < _MinimumBalance)
+                {
+                    return new
+                    {
+                        status = false,
+                        message = $"Your account balance is below minimum balance of {_currency}{_MinimumBalance}"
+                    };
+                }
+
+                return new
+                {
+                    status = false,
+                    message = $"Insufficient balance your withdrawable balance is: {_currency}{(_balance - _MinimumBalance / rate)}"
+                };
+            }
+
+            return new
+            {
+                status = false,
+                message = $"You cannot transfer below {_currency}1"
+            };
+        }
     }
 }
