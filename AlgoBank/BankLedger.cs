@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AlgoBank
 {
@@ -18,7 +19,121 @@ namespace AlgoBank
         public static double EURToNaira = 403.14;
         public static double GBPToNaira = 473.5;
 
+        public static bool RegisterCustomer()
+        {
+            bool IsValid = false;
+            bool IsAdmin = Customers == null ? true : false;
+            string name = "";
+            string email = "";
+            string password = "";
+            do
+            {
+                bool IsValidName = false;
+                do
+                {
+                    Console.Write("Enter First name and Last name: ");
+                    name = Console.ReadLine();
+                    IsValidName = Regex.IsMatch(name, @"^[\p{ L} \.'\-]+$", RegexOptions.IgnoreCase);
+                    if (!IsValidName)
+                    {
+                        Console.WriteLine("Please enter a valid name");
+                    }
+                } while (!IsValidName);
+                
+                bool IsValidEmail = false;
+                do
+                {
+                    Console.Write("Enter email address: ");
+                    email = Console.ReadLine();
+                    IsValidEmail = Regex.IsMatch(email, @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                                                        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
+                                                        RegexOptions.IgnoreCase);
+                    if (!IsValidEmail)
+                    {
+                        Console.WriteLine("Please enter a valid email address");
+                    }
+                } while (!IsValidEmail);
+                
+                bool IsValidPassword = false;
+                do
+                {
+                    Console.WriteLine("Enter your desired password");
+                    Console.WriteLine("Note: Password should be minimun of 6 and maximum of 32 character\n Password Can contain alphabets, number and symbols");
+                    password = Console.ReadLine();
+                    Console.WriteLine("Confirm Password: ");
+                    string ConfirmPassword = Console.ReadLine();
+                    IsValidPassword = password == ConfirmPassword && (6 <= password.Length && password.Length <= 36);
+                    if (!IsValidPassword)
+                    {
+                        Console.WriteLine("Please enter a valid password");
+                    }
+                } while (!IsValidPassword);
 
+                IsValid = IsValidEmail && IsValidName && IsValidPassword;
+            } while (!IsValid);
+
+            Customer NewCustomer = new Customer(name, email, password, IsAdmin);
+            BankLedger.Customers.Add(NewCustomer);
+            BankLedger.TotalCustomer++;
+            return true;
+        }
+        public static Customer AuthenticateCustomer()
+        {
+            bool IsRetry = true;
+            string email = "";
+            string password = "";
+            Customer LoggedUser = null;
+            do
+            {
+                bool IsValidEmail = false;
+                do
+                {
+                    Console.Write("Enter your email address: ");
+                    email = Console.ReadLine();
+                    IsValidEmail = Regex.IsMatch(email, @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                                                        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
+                                                        RegexOptions.IgnoreCase);
+                    if (!IsValidEmail)
+                    {
+                        Console.WriteLine("Please enter a valid email address");
+                    }
+                } while (!IsValidEmail);
+                
+                Console.WriteLine("Enter your account password");
+                password = Console.ReadLine();
+
+                foreach (Customer customer in BankLedger.Customers)
+                {
+                    if (customer.Email == email && customer.Password == password)
+                    {
+                        LoggedUser = customer;
+                        return LoggedUser;
+                    }
+                }
+                int option = 0;
+                Console.WriteLine("Email and/or password is Incorrect");
+                do
+                {
+                    Console.WriteLine("Enter 1 to try again\n Enter 2 to exit");
+                    string UserInput = Console.ReadLine();
+                    int SelectedOption;
+                    bool IsValidInput = int.TryParse(UserInput, out SelectedOption);
+                    
+                    if (IsValidInput && (SelectedOption == 1 || SelectedOption == 2))
+                    {
+                        option = SelectedOption;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid option, Please select valid option");
+                    }
+                } while (option == 0);
+
+                IsRetry = option == 1 ? true : false;
+            } while (IsRetry);
+
+            return LoggedUser;
+        }
         public static Customer GetCustomerByID(int id)
         {
             foreach (Customer customer in Customers)

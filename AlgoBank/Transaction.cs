@@ -42,7 +42,7 @@ namespace AlgoBank
             Receiver = receiver;
 
             string IdPrefix = type == "deposit" ? "DP" :
-                                                type == "withdrawal" ? "WD" : "TR";
+                                    type == "withdrawal" ? "WD" : "TR";
             Id = $"{IdPrefix}-1{++TransactionCounter}";
         }
 

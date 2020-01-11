@@ -26,7 +26,7 @@ namespace AlgoBank
         public string Name { get => _name; set => _name = value; }
         public string Email { get => _email; set => _email = value; }
         public string Password { get => _password; set => _password = value; }
-        internal List<Account> Accounts { get => _accounts; set => _accounts = value; }
+        internal List<Account> Accounts { get => _accounts; set => _accounts.AddRange(value); }
         public bool IsAdmin { get => _IsAdmin; set => _IsAdmin = value; }
 
         public Account SelectAccount()
@@ -76,6 +76,17 @@ namespace AlgoBank
 
                 } while (!IsValid);
             }
+        }
+
+        public void CreateAccount()
+        {
+            Account NewAccount = new Account(Id, Name);
+            List<Account> AccountList = new List<Account>
+            {
+                NewAccount
+            };
+            Accounts = AccountList;
+            BankLedger.AllAccounts.Add(NewAccount);
         }
     }
 }

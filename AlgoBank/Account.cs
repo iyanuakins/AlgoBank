@@ -134,6 +134,7 @@ namespace AlgoBank
                     amount *= rate;
                 }
                 Balance += amount;
+                BankLedger.TotalAmountInBank += amount;
                 if (depositor == "self")
                 {
                     depositor = OwnerName;
@@ -170,6 +171,7 @@ namespace AlgoBank
                 if (Balance - MinimumBalance - amount >= 0)
                 {
                     Balance -= amount;
+                    BankLedger.TotalAmountInBank -= amount;
                     Transaction TransactionDetails = new Transaction("withdrawal", (amount / rate), Currency, "", "", Number, Type, "", OwnerName);
                     Transactions.Add(TransactionDetails);
                     BankLedger.AllTransactions.Add(TransactionDetails);
