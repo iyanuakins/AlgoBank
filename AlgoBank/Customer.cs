@@ -29,13 +29,6 @@ namespace AlgoBank
         internal List<Account> Accounts { get => _accounts; set => _accounts = value; }
         public bool IsAdmin { get => _IsAdmin; set => _IsAdmin = value; }
 
-        public List<Account> accounts
-        {
-            get { return Accounts; }
-            set { Accounts.AddRange(value); }
-        }
-
-
         public Account SelectAccount()
         {
             if (Accounts == null)
