@@ -8,28 +8,51 @@ namespace AlgoBank
     {
         private string _type;
         private double _amount;
-        private DateTime _DateCreated = new DateTime();
+        private string _currency;
+        private DateTime _DateCreated = DateTime.Now;
         private string _SourceAccount;
         private string _SourceAccountType;
         private string _DestinationAccount;
         private string _DestinationAccountType;
+        private string _sender;
+        private string _receiver;
+        private string _TransactionID;
+        public static int TransactionCounter = 10260187;
 
-        public Transaction(string __type, double __amount, string __SourceAccount, string __SourceAccountType, string __DestinationAccount, string __DestinationAccountType)
+        public Transaction(
+            string type,
+            double amount,
+            string currency,
+            string SourceAccount,
+            string SourceAccountType,
+            string DestinationAccount,
+            string DestinationAccountType,
+            string sender,
+            string receiver
+            )
         {
-            _type = __type;
-            _amount = __amount;
-            _SourceAccount = __SourceAccount;
-            _SourceAccountType = __SourceAccountType;
-            _DestinationAccount = __DestinationAccount;
-            _DestinationAccountType = __DestinationAccount;
+            _type = type;
+            _amount = amount;
+            _currency = currency;
+            _SourceAccount = SourceAccount;
+            _SourceAccountType = SourceAccountType;
+            _DestinationAccount = DestinationAccount;
+            _DestinationAccountType = DestinationAccountType;
+            _sender = sender;
+            _receiver = receiver;
+
+            string TransactionIDPrefix = type == "deposit" ? "DP" :
+                                                type == "withdrawal" ? "WD" : "TR";
+            _TransactionID = $"{TransactionIDPrefix}-1{++TransactionCounter}";
         }
 
-        public DateTime DateCreated { get => DateCreated;}
+        public DateTime DateCreated { get => _DateCreated; }
         public string Type { get => _type; }
         public double Amount { get => _amount; }
         public string SourceAccount { get => _SourceAccount; }
         public string SourceAccountType { get => _SourceAccountType; }
         public string DestinationAccount { get => _DestinationAccount; }
         public string DestinationAccountType { get => _DestinationAccountType; }
+        public string TransactionID { get => _TransactionID; }
     }
 }
