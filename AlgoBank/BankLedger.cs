@@ -7,7 +7,7 @@ namespace AlgoBank
 {
     class BankLedger
     {
-        public static List<Customer> Customers = null;
+        public static List<Customer> Customers = new List<Customer>();
         public static List<Account> AllAccounts = new List<Account>();
         public static List<Transaction> AllTransactions = new List<Transaction>();
         public static double TotalAmountInBank = 0.0;
@@ -22,7 +22,7 @@ namespace AlgoBank
         public static bool RegisterCustomer()
         {
             bool IsValid = false;
-            bool IsAdmin = Customers == null ? true : false;
+            bool IsAdmin = Customers.Count == 0 ? true : false;
             string name = "";
             string email = "";
             string password = "";
@@ -33,7 +33,7 @@ namespace AlgoBank
                 {
                     Console.Write("Enter First name and Last name: ");
                     name = Console.ReadLine();
-                    IsValidName = Regex.IsMatch(name, @"^[\p{ L} \.'\-]+$", RegexOptions.IgnoreCase);
+                    IsValidName = Regex.IsMatch(name, @"^[\w \.'\-]+$", RegexOptions.IgnoreCase);
                     if (!IsValidName)
                     {
                         Console.WriteLine("Please enter a valid name");
@@ -52,7 +52,7 @@ namespace AlgoBank
                     {
                         Console.WriteLine("Please enter a valid email address");
                     }
-                    else
+                    else if (Customers.Count == 0)
                     {
                         foreach (Customer customer in BankLedger.Customers)
                         {
@@ -91,14 +91,23 @@ namespace AlgoBank
                 do
                 {
                     Console.WriteLine("Enter your desired password");
-                    Console.WriteLine("Note: Password should be minimun of 6 and maximum of 32 character\n Password Can contain alphabets, number and symbols");
+                    Console.WriteLine("Note:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols");
                     password = Console.ReadLine();
-                    Console.WriteLine("Confirm Password: ");
-                    string ConfirmPassword = Console.ReadLine();
-                    IsValidPassword = password == ConfirmPassword && (6 <= password.Length && password.Length <= 36);
-                    if (!IsValidPassword)
+                    bool PasswordValid = 6 <= password.Length && password.Length <= 36;
+                    if (PasswordValid)
+                    {
+                        Console.WriteLine("Confirm Password: ");
+                        string ConfirmPassword = Console.ReadLine();
+                        IsValidPassword = password == ConfirmPassword;
+                        if (!IsValidPassword)
+                        {
+                            Console.WriteLine("Password does not match, try again");
+                        }
+                    }
+                    else
                     {
                         Console.WriteLine("Please enter a valid password");
+
                     }
                 } while (!IsValidPassword);
 

@@ -13,7 +13,7 @@ namespace AlgoBank
         private DateTime _DateCreated = DateTime.Now;
         private int _owner;
         private string _OwnerName;
-        private List<Transaction> _transactions = null;
+        private List<Transaction> _transactions = new List<Transaction>();
         private int _MinimumBalance = 0;
         public static int AccountPrefix = 10;
 
