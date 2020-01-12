@@ -33,9 +33,10 @@ namespace AlgoBank
                 {
                     Console.Write("Enter First name and Last name: ");
                     name = Console.ReadLine();
-                    IsValidName = Regex.IsMatch(name, @"^[\w \.'\-]+$", RegexOptions.IgnoreCase);
+                    IsValidName = Regex.IsMatch(name, @"^[A-Za-z\s.\'\-]+$", RegexOptions.IgnoreCase);
                     if (!IsValidName)
                     {
+                        //@"^[\.'\-]+$"
                         Console.WriteLine("Please enter a valid name");
                     }
                 } while (!IsValidName);
@@ -52,18 +53,18 @@ namespace AlgoBank
                     {
                         Console.WriteLine("Please enter a valid email address");
                     }
-                    else if (Customers.Count == 0)
+                    else if (Customers.Count != 0)
                     {
                         foreach (Customer customer in BankLedger.Customers)
                         {
                             if (customer.Email == email)
                             {
                                 IsValidEmail = false;
-                                Console.WriteLine("Email already in use by another customer\nTry another email or try to login");
+                                Console.WriteLine("Email already in use by another customer\nTry another email or try to login\n");
                                 int option = 0;
                                 do
                                 {
-                                    Console.WriteLine("Enter 1 to try another email\n Enter 2 to exit registration process");
+                                    Console.WriteLine("Enter 1 to try another email\nEnter 2 to exit registration process");
                                     string UserInput = Console.ReadLine();
                                     int SelectedOption;
                                     bool IsValidInput = int.TryParse(UserInput, out SelectedOption);

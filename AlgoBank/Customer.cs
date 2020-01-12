@@ -11,7 +11,7 @@ namespace AlgoBank
         private string _email;
         private string _password;
         private bool _IsAdmin;
-        private List<Account> _accounts = null;
+        private List<Account> _accounts = new List<Account>();
         public static int CustomerCount = 0;
         public Customer(string name, string email, string password, bool isAdmin)
         {

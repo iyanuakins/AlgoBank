@@ -27,7 +27,6 @@ namespace AlgoBank
             MinimumBalance = Convert.ToInt32(options[2]);
             Number = GenerateAccount();
         }
-
         public string Type { get => _type; set => _type = value; }
         public string Number { get => _number; set => _number = value; }
         public string Currency { get => _currency; set => _currency = value; }
