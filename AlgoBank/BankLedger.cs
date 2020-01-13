@@ -7,17 +7,29 @@ namespace AlgoBank
 {
     class BankLedger
     {
-        public static List<Customer> Customers = new List<Customer>();
-        public static List<Account> AllAccounts = new List<Account>();
-        public static List<Transaction> AllTransactions = new List<Transaction>();
-        public static double TotalAmountInBank = 0.0;
-        public static int TotalCustomer = 0;
-        public static int TotalSavingsAccount = 0;
-        public static int TotalCurrentAccount = 0;
-        public static int TotalDomiciliaryAccount = 0;
-        public static double USDToNaira = 362.5;
-        public static double EURToNaira = 403.14;
-        public static double GBPToNaira = 473.5;
+        private static List<Customer> customers = new List<Customer>();
+        private static List<Account> allAccounts = new List<Account>();
+        private static List<Transaction> allTransactions = new List<Transaction>();
+        private static double totalAmountInBank = 0.0;
+        private static int totalCustomer = 0;
+        private static int totalSavingsAccount = 0;
+        private static int totalCurrentAccount = 0;
+        private static int totalDomiciliaryAccount = 0;
+        private static double uSDToNaira = 362.5;
+        private static double eURToNaira = 403.14;
+        private static double gBPToNaira = 473.5;
+
+        internal static List<Customer> Customers { get => customers; }
+        internal static List<Account> AllAccounts { get => allAccounts; }
+        internal static List<Transaction> AllTransactions { get => allTransactions; }
+        public static double TotalAmountInBank { get => totalAmountInBank; set => totalAmountInBank = value; }
+        public static int TotalCustomer { get => totalCustomer; set => totalCustomer = value; }
+        public static int TotalSavingsAccount { get => totalSavingsAccount; set => totalSavingsAccount = value; }
+        public static int TotalCurrentAccount { get => totalCurrentAccount; set => totalCurrentAccount = value; }
+        public static int TotalDomiciliaryAccount { get => totalDomiciliaryAccount; set => totalDomiciliaryAccount = value; }
+        public static double USDToNaira { get => uSDToNaira; }
+        public static double EURToNaira { get => eURToNaira; }
+        public static double GBPToNaira { get => gBPToNaira; }
 
         public static bool RegisterCustomer()
         {
@@ -91,14 +103,66 @@ namespace AlgoBank
                 bool IsValidPassword = false;
                 do
                 {
-                    Console.WriteLine("Enter your desired password");
                     Console.WriteLine("\nNote:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols\n");
-                    password = Console.ReadLine();
+                    Console.Write("Enter your desired password: ");
+                    password = "";
+                    do
+                    {
+                        ConsoleKeyInfo key = Console.ReadKey(true);
+                        // Backspace Should Not Work
+                        if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                        {
+                            password += key.KeyChar;
+                            Random Rand = new Random();
+                            int number = Rand.Next(1, 3);
+                            string Asterisks = "".PadLeft(number, 'X').Replace('X', '*');
+                            Console.Write($"{Asterisks}");
+                        }
+                        else
+                        {
+                            if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                            {
+                                password = password.Substring(0, (password.Length - 1));
+                                Console.Write("\b \b");
+                            }
+                            else if (key.Key == ConsoleKey.Enter)
+                            {
+                                Console.WriteLine();
+                                break;
+                            }
+                        }
+                    } while (true);
                     bool PasswordValid = 6 <= password.Length && password.Length <= 36;
                     if (PasswordValid)
                     {
-                        Console.WriteLine("Confirm Password: ");
-                        string ConfirmPassword = Console.ReadLine();
+                        Console.Write("Confirm Password: ");
+                        string ConfirmPassword = "";
+                        do
+                        {
+                            ConsoleKeyInfo key = Console.ReadKey(true);
+                            // Backspace Should Not Work
+                            if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                            {
+                                ConfirmPassword += key.KeyChar;
+                                Random Rand = new Random();
+                                int number = Rand.Next(1, 3);
+                                string Asterisks = "".PadLeft(number, 'X').Replace('X', '*');
+                                Console.Write($"{Asterisks}");
+                            }
+                            else
+                            {
+                                if (key.Key == ConsoleKey.Backspace && ConfirmPassword.Length > 0)
+                                {
+                                    ConfirmPassword = ConfirmPassword.Substring(0, (ConfirmPassword.Length - 1));
+                                    Console.Write("\b \b");
+                                }
+                                else if (key.Key == ConsoleKey.Enter)
+                                {
+                                    Console.WriteLine();
+                                    break;
+                                }
+                            }
+                        } while (true);
                         IsValidPassword = password == ConfirmPassword;
                         if (!IsValidPassword)
                         {
@@ -143,8 +207,32 @@ namespace AlgoBank
                 } while (!IsValidEmail);
                 
                 Console.Write("Enter your account password: ");
-                password = Console.ReadLine();
-
+                password = "";
+                do
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    // Backspace Should Not Work
+                    if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                    {
+                        password += key.KeyChar;
+                        Random Rand = new Random();
+                        int number = Rand.Next(1, 3);
+                        string Asterisks = "".PadLeft(number, 'X').Replace('X', '*');
+                        Console.Write($"{Asterisks}");
+                    }
+                    else
+                    {
+                        if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                        {
+                            password = password.Substring(0, (password.Length - 1));
+                            Console.Write("\b \b");
+                        }
+                        else if (key.Key == ConsoleKey.Enter)
+                        {
+                            break;
+                        }
+                    }
+                } while (true);
                 foreach (Customer customer in BankLedger.Customers)
                 {
                     if (customer.Email == email && customer.Password == password)

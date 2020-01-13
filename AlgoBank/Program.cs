@@ -14,10 +14,10 @@ namespace AlgoBank
                 bool IsValid = false;
                 do
                 {
-                    Console.WriteLine("Enter 1 register\nEnter 2 to login\n");
+                    Console.WriteLine("Enter 1 register\nEnter 2 to login\nEnter 3 to exit");
                     string UserInput = Console.ReadLine();
                     IsValid = int.TryParse(UserInput, out FirstSelectedOption);
-                    if (!(IsValid && (FirstSelectedOption == 1 || FirstSelectedOption == 2)))
+                    if (!(IsValid && (1 <= FirstSelectedOption && FirstSelectedOption <= 3)))
                     {
                         IsValid = false;
                         Console.WriteLine("Invalid option, Please select valid option\n");
@@ -32,7 +32,7 @@ namespace AlgoBank
                         Console.WriteLine("Registration successful, you can now login\n");
                     }
                 }
-                else
+                else if(FirstSelectedOption == 2)
                 {
                     Customer LoggedInUser = BankLedger.AuthenticateCustomer();
                     if (LoggedInUser != null)
@@ -483,6 +483,10 @@ namespace AlgoBank
                             } while (IsCustomerSessionOn);
                         }
                     }
+                }
+                else
+                {
+                    IsCustomerSessionOn = true;
                 }
             } while (!IsCustomerSessionOn);
         }
