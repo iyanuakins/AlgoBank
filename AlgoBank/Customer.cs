@@ -28,56 +28,37 @@ namespace AlgoBank
         public string Password { get => _password; set => _password = value; }
         internal List<Account> Accounts { get => _accounts; set => _accounts.AddRange(value); }
         public bool IsAdmin { get => _IsAdmin; set => _IsAdmin = value; }
-
         public Account SelectAccount()
         {
-            if (Accounts == null)
+            bool IsValid = false;
+            do
             {
-                throw new Exception("Please create account first");
-            }
-            //else if (Accounts.Count == 1)
-            //{
-            //    return Accounts[0];
-            //}
-            else
-            {
-                bool IsValid = false;
-                do
+                StringBuilder AccountNumbers = new StringBuilder();
+                int i = 0;
+                foreach (Account account in Accounts)
                 {
-                    StringBuilder AccountNumbers = new StringBuilder();
-                    int i = 0;
-                    foreach (Account account in Accounts)
-                    {
-                        string line = $"Enter {++i} to select {account}";
-                        AccountNumbers.AppendLine(line);
-                    }
-                    Console.Write("Selected Account: ");
-                    string UserInput = Console.ReadLine();
-                    int SelectedOption;
-                    IsValid = int.TryParse(UserInput, out SelectedOption);
-                    try
-                    {
-                        if (IsValid)
-                        {
-                            Account SelectedAccount = Accounts[SelectedOption - 1];
-                            return SelectedAccount;
-                        }
-                        else
-                        {
-                            IsValid = false;
-                            throw new Exception("Please enter correct input");
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        IsValid = false;
-                        throw new Exception("Please enter correct input");
-                    }
+                    string line = $"Enter {++i} to select your {account.Type} with account number of {account.Number}";
+                    AccountNumbers.AppendLine(line);
+                }
+                Console.Write(AccountNumbers);
+                string UserInput = Console.ReadLine();
+                int SelectedOption;
+                IsValid = int.TryParse(UserInput, out SelectedOption);
+                if (IsValid && 1 <= SelectedOption && SelectedOption <= Accounts.Count)
+                {
+                    Account SelectedAccount = Accounts[SelectedOption - 1];
+                    return SelectedAccount;
+                }
+                else
+                {
+                    IsValid = false;
+                    Console.WriteLine("Please enter correct input\n");
+                }
 
-                } while (!IsValid);
-            }
+            } while (!IsValid);
+
+            return null;
         }
-
         public void CreateAccount()
         {
             Account NewAccount = new Account(Id, Name);
@@ -87,6 +68,13 @@ namespace AlgoBank
             };
             Accounts = AccountList;
             BankLedger.AllAccounts.Add(NewAccount);
+            string LastMessage = NewAccount.MinimumBalance == 0 ? "" : $"Your Minimum account balance is {NewAccount.Currency}{NewAccount.MinimumBalance}";
+            Console.WriteLine("Below are the details of newly created account:\n" +
+                                $"Account name: {NewAccount.OwnerName}\n" +
+                                $"Account number: {NewAccount.Number}\n" +
+                                $"Account type: {NewAccount.Type}\n" +
+                                $"Account currency: {NewAccount.Currency}\n" +
+                                $"{LastMessage}");
         }
     }
 }

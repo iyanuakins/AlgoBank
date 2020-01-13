@@ -224,22 +224,17 @@ namespace AlgoBank
 
             throw new Exception("Unauthorize access");
         }
-        public static Account GetAccountByNumber(Customer customer, string number)
+        public static Account GetAccountByNumber(string number)
         {
-            if (customer.IsAdmin)
+            foreach (Account account in AllAccounts)
             {
-                foreach (Account account in AllAccounts)
+                if (account.Number == number)
                 {
-                    if (account.Number == number)
-                    {
-                        return account;
-                    }
+                    return account;
                 }
-
-                return null;
             }
 
-            throw new Exception("Unauthorize access");
+            return null;
         }
         public static List<Transaction> GetAllTransactions(Customer customer)
         {

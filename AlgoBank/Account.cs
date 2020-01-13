@@ -106,6 +106,7 @@ namespace AlgoBank
             int RandomPartTwo = random.Next(10, 99);
             int RandomPartThree = random.Next(10, 99);
             int prefix = (AccountPrefix % 99) < 10 ? AccountPrefix % 99 + 10 : AccountPrefix % 99;
+            AccountPrefix++;
             return $"00{prefix}{RandomPartOne}{RandomPartTwo}{RandomPartThree}";
         }
 
@@ -120,7 +121,7 @@ namespace AlgoBank
             return $"{Currency}{(Balance / rate)}";
         }
 
-        public object Deposit(double amount, string depositor = "self")
+        public string Deposit(double amount, string depositor = "self")
         {
 
             if (amount > 0)
@@ -141,21 +142,12 @@ namespace AlgoBank
                 Transaction TransactionDetails = new Transaction("deposit", (amount / rate), Currency, Number, Type, "", "", depositor, OwnerName);
                 Transactions.Add(TransactionDetails);
                 BankLedger.AllTransactions.Add(TransactionDetails);
-                return new
-                {
-                    status = true,
-                    message = $"Deposit of {Currency}{amount / rate} is successful.\n New balance is: {Currency}{(Balance / rate)}"
-                };
+                return $"Deposit of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
             }
-
-            return new
-            {
-                status = false,
-                message = $"Mininum amount to deposit is {Currency}1"
-            };
+            return $"Mininum amount to deposit is {Currency}1\n";
         }
 
-        public object Withdraw(double amount)
+        public string Withdraw(double amount)
         {
             if (amount > 0)
             {
@@ -174,37 +166,21 @@ namespace AlgoBank
                     Transaction TransactionDetails = new Transaction("withdrawal", (amount / rate), Currency, "", "", Number, Type, "", OwnerName);
                     Transactions.Add(TransactionDetails);
                     BankLedger.AllTransactions.Add(TransactionDetails);
-                    return new
-                    {
-                        status = true,
-                        message = $"Withdrawal of {Currency}{amount / rate} is successful.\n New balance is: {Currency}{(Balance / rate)}"
-                    };
+                    return $"Withdrawal of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
                 if (Balance < MinimumBalance)
                 {
-                    return new
-                    {
-                        status = false,
-                        message = $"Your account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}"
-                    };
+                    return $"Your account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}\n";
                 }
 
-                return new
-                {
-                    status = false,
-                    message = $"Insufficient balance your withdrawable balance is: {Currency}{(Balance - MinimumBalance / rate)}"
-                };
+                return $"Insufficient balance your withdrawable balance is: {Currency}{(Balance - MinimumBalance / rate)}\n";
             }
 
-            return new
-            {
-                status = false,
-                message = $"You cannot withdraw below {Currency}1"
-            };
+            return $"You cannot withdraw below {Currency}1\n";
         }
 
-        public object Transfer(double amount, Account DestinationAccount) 
+        public string Transfer(double amount, Account DestinationAccount) 
         {   
             if (amount > 0)
             {
@@ -236,39 +212,45 @@ namespace AlgoBank
                     Transaction TransactionDetails2 = new Transaction("transfer", (amount / ReceiverRate), DestinationAccount.Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
                     DestinationAccount.Transactions.Add(TransactionDetails2);
                     BankLedger.AllTransactions.Add(TransactionDetails2);
-                    return new
-                    {
-                        status = true,
-                        message = $"Transfer of {Currency}{amount / rate} to {DestinationAccount.OwnerName}:({DestinationAccount.Number}) was successful.\n New balance is: {Currency}{(Balance / rate)}"
-                    };
+                    return $"Transfer of {Currency}{amount / rate} to {DestinationAccount.OwnerName}:({DestinationAccount.Number}) was successful.\nNew balance is: {Currency}{(Balance / rate)}";
                 }
 
                 if (Balance < MinimumBalance)
                 {
-                    return new
-                    {
-                        status = false,
-                        message = $"Your account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}"
-                    };
+                    return $"Your account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}";
                 }
 
-                return new
-                {
-                    status = false,
-                    message = $"Insufficient balance your transferable balance is: {Currency}{(Balance - MinimumBalance / rate)}"
-                };
+                return $"Insufficient balance your transferable balance is: {Currency}{(Balance - MinimumBalance / rate)}";
             }
 
-            return new
-            {
-                status = false,
-                message = $"You cannot transfer below {Currency}1"
-            };
+            return $"You cannot transfer below {Currency}1";
         }
 
-        public string GetAccountStatement()
+        public void GetAccountStatement()
         {
-            return "TODO";
+            if (Transactions.Count > 0)
+            {
+                StringBuilder statement = new StringBuilder();
+                statement.AppendLine($"Account name: {OwnerName}");
+                statement.AppendLine($"Account number: {Number}");
+                statement.AppendLine($"Account Type: {Type}");
+                statement.AppendLine($"Account currency: {Currency}");
+                statement.AppendLine();
+                statement.AppendLine("| Transaction ref num | Transaction type | Amount | Sender | Receiver | Transaction Date |");
+                foreach (Transaction transaction in Transactions)
+                {
+                    string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", transaction.DateCreated);
+                    statement.AppendLine($"| {transaction.Id} | {transaction.Type} | {transaction.Amount} | {transaction.Sender} | {transaction.Receiver} | {date} |");
+                }
+                statement.AppendLine();
+                statement.AppendLine($"Generated on {string.Format("{0: dd-MM-yyyy HH:mm}", DateTime.Now)}");
+                Console.WriteLine(statement.ToString());
+            }
+            else
+            {
+
+                Console.WriteLine("No transaction record on this account");
+            }
         }
     }
 }
