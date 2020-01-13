@@ -16,7 +16,7 @@ namespace AlgoBank
         private string _DestinationAccountType;
         private string _sender;
         private string _receiver;
-        private string _TransactionID;
+        private string _Id;
         public static int TransactionCounter = 10000107;
 
         public Transaction(
@@ -41,9 +41,9 @@ namespace AlgoBank
             Sender = sender;
             Receiver = receiver;
 
-            string TransactionIDPrefix = type == "deposit" ? "DP" :
-                                                type == "withdrawal" ? "WD" : "TR";
-            TransactionID = $"{TransactionIDPrefix}-1{++TransactionCounter}";
+            string IdPrefix = type == "deposit" ? "DP" :
+                                    type == "withdrawal" ? "WD" : "TR";
+            Id = $"{IdPrefix}-1{++TransactionCounter}";
         }
 
         public string Type { get => _type; set => _type = value; }
@@ -56,6 +56,6 @@ namespace AlgoBank
         public string DestinationAccountType { get => _DestinationAccountType; set => _DestinationAccountType = value; }
         public string Sender { get => _sender; set => _sender = value; }
         public string Receiver { get => _receiver; set => _receiver = value; }
-        public string TransactionID { get => _TransactionID; set => _TransactionID = value; }
+        public string Id { get => _Id; set => _Id = value; }
     }
 }
