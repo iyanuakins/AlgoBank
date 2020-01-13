@@ -40,6 +40,7 @@ namespace AlgoBank
                     string line = $"Enter {++i} to select your {account.Type} with account number of {account.Number}";
                     AccountNumbers.AppendLine(line);
                 }
+                Console.WriteLine("Please select account: ");
                 Console.Write(AccountNumbers);
                 string UserInput = Console.ReadLine();
                 int SelectedOption;
@@ -52,7 +53,7 @@ namespace AlgoBank
                 else
                 {
                     IsValid = false;
-                    Console.WriteLine("Please enter correct input\n");
+                    Console.WriteLine("\nPlease enter correct input\n");
                 }
 
             } while (!IsValid);
@@ -69,12 +70,14 @@ namespace AlgoBank
             Accounts = AccountList;
             BankLedger.AllAccounts.Add(NewAccount);
             string LastMessage = NewAccount.MinimumBalance == 0 ? "" : $"Your Minimum account balance is {NewAccount.Currency}{NewAccount.MinimumBalance}";
+            Console.WriteLine();
             Console.WriteLine("Below are the details of newly created account:\n" +
                                 $"Account name: {NewAccount.OwnerName}\n" +
                                 $"Account number: {NewAccount.Number}\n" +
                                 $"Account type: {NewAccount.Type}\n" +
                                 $"Account currency: {NewAccount.Currency}\n" +
                                 $"{LastMessage}");
+            Console.WriteLine();
         }
     }
 }

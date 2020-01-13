@@ -37,7 +37,7 @@ namespace AlgoBank
                     if (!IsValidName)
                     {
                         //@"^[\.'\-]+$"
-                        Console.WriteLine("Please enter a valid name");
+                        Console.WriteLine("\nPlease enter a valid name\n");
                     }
                 } while (!IsValidName);
                 
@@ -51,7 +51,7 @@ namespace AlgoBank
                                                         RegexOptions.IgnoreCase);
                     if (!IsValidEmail)
                     {
-                        Console.WriteLine("Please enter a valid email address");
+                        Console.WriteLine("\nPlease enter a valid email address\n");
                     }
                     else if (Customers.Count != 0)
                     {
@@ -60,11 +60,11 @@ namespace AlgoBank
                             if (customer.Email == email)
                             {
                                 IsValidEmail = false;
-                                Console.WriteLine("Email already in use by another customer\nTry another email or try to login\n");
+                                Console.WriteLine("\nEmail already in use by another customer\nTry another email or try to login\n");
                                 int option = 0;
                                 do
                                 {
-                                    Console.WriteLine("Enter 1 to try another email\nEnter 2 to exit registration process");
+                                    Console.WriteLine("\nEnter 1 to try another email\nEnter 2 to exit registration process");
                                     string UserInput = Console.ReadLine();
                                     int SelectedOption;
                                     bool IsValidInput = int.TryParse(UserInput, out SelectedOption);
@@ -75,7 +75,7 @@ namespace AlgoBank
                                     }
                                     else
                                     {
-                                        Console.WriteLine("Invalid option, Please select valid option");
+                                        Console.WriteLine("\nInvalid option, Please select valid option\n");
                                     }
                                 } while (option == 0);
 
@@ -92,7 +92,7 @@ namespace AlgoBank
                 do
                 {
                     Console.WriteLine("Enter your desired password");
-                    Console.WriteLine("Note:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols");
+                    Console.WriteLine("\nNote:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols\n");
                     password = Console.ReadLine();
                     bool PasswordValid = 6 <= password.Length && password.Length <= 36;
                     if (PasswordValid)
@@ -102,12 +102,12 @@ namespace AlgoBank
                         IsValidPassword = password == ConfirmPassword;
                         if (!IsValidPassword)
                         {
-                            Console.WriteLine("Password does not match, try again");
+                            Console.WriteLine("\nPassword does not match, try again\n");
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Please enter a valid password");
+                        Console.WriteLine("\nPlease enter a valid password\n");
 
                     }
                 } while (!IsValidPassword);
@@ -138,11 +138,11 @@ namespace AlgoBank
                                                         RegexOptions.IgnoreCase);
                     if (!IsValidEmail)
                     {
-                        Console.WriteLine("Please enter a valid email address");
+                        Console.WriteLine("\nPlease enter a valid email address\n");
                     }
                 } while (!IsValidEmail);
                 
-                Console.WriteLine("Enter your account password");
+                Console.Write("Enter your account password");
                 password = Console.ReadLine();
 
                 foreach (Customer customer in BankLedger.Customers)
@@ -154,10 +154,10 @@ namespace AlgoBank
                     }
                 }
                 int option = 0;
-                Console.WriteLine("Email and/or password is Incorrect");
+                Console.WriteLine("\nEmail and/or password is Incorrect\n");
                 do
                 {
-                    Console.WriteLine("Enter 1 to try again\n Enter 2 to exit");
+                    Console.WriteLine("\nEnter 1 to try again\nEnter 2 to exit");
                     string UserInput = Console.ReadLine();
                     int SelectedOption;
                     bool IsValidInput = int.TryParse(UserInput, out SelectedOption);
@@ -168,7 +168,7 @@ namespace AlgoBank
                     }
                     else
                     {
-                        Console.WriteLine("Invalid option, Please select valid option");
+                        Console.WriteLine("\nInvalid option, Please select valid option\n");
                     }
                 } while (option == 0);
 
@@ -195,7 +195,7 @@ namespace AlgoBank
                 return Customers;
             }
 
-            throw new Exception("Unauthorize access");
+            throw new Exception("\nUnauthorize access\n");
         }
         public static List<Account> GetAllAccounts(Customer customer)
         {
@@ -204,7 +204,7 @@ namespace AlgoBank
                 return AllAccounts;
             }
 
-            throw new Exception("Unauthorize access");
+            throw new Exception("\nUnauthorize access\n");
         }
         public static List<Account> GetAllAccountsByType(Customer customer, string type)
         {
@@ -222,7 +222,7 @@ namespace AlgoBank
                 return AllAccount;
             }
 
-            throw new Exception("Unauthorize access");
+            throw new Exception("\nUnauthorize access\n");
         }
         public static Account GetAccountByNumber(string number)
         {
@@ -243,7 +243,7 @@ namespace AlgoBank
                 return AllTransactions;
             }
 
-            throw new Exception("Unauthorize access");
+            throw new Exception("\nUnauthorize access\n");
         }
         public static List<Transaction> GetAllTransactionsByType(Customer customer, string type)
         {
@@ -261,7 +261,7 @@ namespace AlgoBank
                 return AllTransaction;
             }
 
-            throw new Exception("Unauthorize access");
+            throw new Exception("\nUnauthorize access\n");
         }
         public static Transaction GetTransactionByID(Customer customer, string id)
         {

@@ -168,10 +168,32 @@ namespace AlgoBank
                                             if (!IsValidAccount)
                                             {
                                                 Console.WriteLine("Account provided does not exist\n");
+                                                bool IsValidOption2 = false;
+                                                int PromptSelectedOption;
+                                                do
+                                                {
+                                                    Console.WriteLine("Enter 1 to re-enter\nEnter 2 to exit transfer process\n");
+                                                    string UserInputForOption = Console.ReadLine();
+                                                    IsValidOption2 = int.TryParse(UserInputForOption, out PromptSelectedOption);
+                                                    if (!(IsValidOption2 && (PromptSelectedOption == 1 || PromptSelectedOption == 2)))
+                                                    {
+                                                        IsValidOption2 = false;
+                                                        Console.WriteLine("Invalid option, Please select valid option\n");
+                                                    }
+                                                } while (!IsValidOption2);
+                                                if (PromptSelectedOption == 1)
+                                                {
+                                                    IsValidAccount = false;
+                                                }
+                                                else
+                                                {
+                                                    IsValidAccount = true;
+                                                    IsContinue = false;
+                                                }
                                             }
                                             else
                                             {
-                                                string EnteredAccount = Convert.ToString(Account);
+                                                string EnteredAccount = Convert.ToString(Account).Trim();
                                                 RecipientAccount = BankLedger.GetAccountByNumber(EnteredAccount);
                                                 if (RecipientAccount == null)
                                                 {

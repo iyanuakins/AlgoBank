@@ -107,7 +107,7 @@ namespace AlgoBank
             int RandomPartThree = random.Next(10, 99);
             int prefix = (AccountPrefix % 99) < 10 ? AccountPrefix % 99 + 10 : AccountPrefix % 99;
             AccountPrefix++;
-            return $"00{prefix}{RandomPartOne}{RandomPartTwo}{RandomPartThree}";
+            return $"10{prefix}{RandomPartOne}{RandomPartTwo}{RandomPartThree}";
         }
 
         public string GetBalance()
@@ -142,9 +142,9 @@ namespace AlgoBank
                 Transaction TransactionDetails = new Transaction("deposit", (amount / rate), Currency, Number, Type, "", "", depositor, OwnerName);
                 Transactions.Add(TransactionDetails);
                 BankLedger.AllTransactions.Add(TransactionDetails);
-                return $"Deposit of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
+                return $"\nDeposit of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
             }
-            return $"Mininum amount to deposit is {Currency}1\n";
+            return $"\nMininum amount to deposit is {Currency}1\n";
         }
 
         public string Withdraw(double amount)
@@ -166,18 +166,18 @@ namespace AlgoBank
                     Transaction TransactionDetails = new Transaction("withdrawal", (amount / rate), Currency, "", "", Number, Type, "", OwnerName);
                     Transactions.Add(TransactionDetails);
                     BankLedger.AllTransactions.Add(TransactionDetails);
-                    return $"Withdrawal of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
+                    return $"\nWithdrawal of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
                 if (Balance < MinimumBalance)
                 {
-                    return $"Your account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}\n";
+                    return $"\nYour account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}\n";
                 }
 
-                return $"Insufficient balance your withdrawable balance is: {Currency}{(Balance - MinimumBalance / rate)}\n";
+                return $"\nInsufficient balance your withdrawable balance is: {Currency}{((Balance - MinimumBalance) / rate)}\n";
             }
 
-            return $"You cannot withdraw below {Currency}1\n";
+            return $"\nYou cannot withdraw below {Currency}1\n";
         }
 
         public string Transfer(double amount, Account DestinationAccount) 
@@ -212,18 +212,18 @@ namespace AlgoBank
                     Transaction TransactionDetails2 = new Transaction("transfer", (amount / ReceiverRate), DestinationAccount.Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
                     DestinationAccount.Transactions.Add(TransactionDetails2);
                     BankLedger.AllTransactions.Add(TransactionDetails2);
-                    return $"Transfer of {Currency}{amount / rate} to {DestinationAccount.OwnerName}:({DestinationAccount.Number}) was successful.\nNew balance is: {Currency}{(Balance / rate)}";
+                    return $"\nTransfer of {Currency}{amount / rate} to {DestinationAccount.OwnerName}:({DestinationAccount.Number}) was successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
                 if (Balance < MinimumBalance)
                 {
-                    return $"Your account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}";
+                    return $"\nYour account balance ({Currency}{(Balance / rate)}) is below minimum balance of {Currency}{MinimumBalance}\n";
                 }
 
-                return $"Insufficient balance your transferable balance is: {Currency}{(Balance - MinimumBalance / rate)}";
+                return $"\nInsufficient balance your transferable balance is: {Currency}{(Balance - MinimumBalance / rate)}\n";
             }
 
-            return $"You cannot transfer below {Currency}1";
+            return $"\nYou cannot transfer below {Currency}1\n";
         }
 
         public void GetAccountStatement()
@@ -231,6 +231,7 @@ namespace AlgoBank
             if (Transactions.Count > 0)
             {
                 StringBuilder statement = new StringBuilder();
+                statement.AppendLine();
                 statement.AppendLine($"Account name: {OwnerName}");
                 statement.AppendLine($"Account number: {Number}");
                 statement.AppendLine($"Account Type: {Type}");
@@ -245,6 +246,7 @@ namespace AlgoBank
                 statement.AppendLine();
                 statement.AppendLine($"Generated on {string.Format("{0: dd-MM-yyyy HH:mm}", DateTime.Now)}");
                 Console.WriteLine(statement.ToString());
+                Console.WriteLine();
             }
             else
             {
