@@ -142,7 +142,7 @@ namespace AlgoBank
                     }
                 } while (!IsValidEmail);
                 
-                Console.Write("Enter your account password");
+                Console.Write("Enter your account password: ");
                 password = Console.ReadLine();
 
                 foreach (Customer customer in BankLedger.Customers)
@@ -279,15 +279,15 @@ namespace AlgoBank
 
             throw new Exception("Unauthorize access");
         }
-        public static object GetTotalAccountCount(Customer customer)
+        public static int[] GetTotalAccountCount(Customer customer)
         {
-            return new
-            {
-                SavingsAccount = TotalSavingsAccount,
-                CurrentAccount = TotalCurrentAccount,
-                DomiciliaryAccount = TotalDomiciliaryAccount,
-                TotalAccounts = TotalSavingsAccount + TotalDomiciliaryAccount + TotalCurrentAccount
-            };
+            int[] TotalAccountCount = new int[4];
+            TotalAccountCount[0] = TotalSavingsAccount;
+            TotalAccountCount[1] = TotalCurrentAccount;
+            TotalAccountCount[2] = TotalDomiciliaryAccount;
+            TotalAccountCount[3] = TotalSavingsAccount + TotalDomiciliaryAccount + TotalCurrentAccount;
+
+            return TotalAccountCount;
         }
     }
 }
