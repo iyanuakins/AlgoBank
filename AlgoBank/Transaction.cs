@@ -17,7 +17,7 @@ namespace AlgoBank
         private string _sender;
         private string _receiver;
         private string _TransactionID;
-        public static int TransactionCounter = 10260187;
+        public static int TransactionCounter = 10000107;
 
         public Transaction(
             string type,
@@ -31,28 +31,31 @@ namespace AlgoBank
             string receiver
             )
         {
-            _type = type;
-            _amount = amount;
-            _currency = currency;
-            _SourceAccount = SourceAccount;
-            _SourceAccountType = SourceAccountType;
-            _DestinationAccount = DestinationAccount;
-            _DestinationAccountType = DestinationAccountType;
-            _sender = sender;
-            _receiver = receiver;
+            Type = type;
+            Amount = amount;
+            Currency = currency;
+            this.SourceAccount = SourceAccount;
+            this.SourceAccountType = SourceAccountType;
+            this.DestinationAccount = DestinationAccount;
+            this.DestinationAccountType = DestinationAccountType;
+            Sender = sender;
+            Receiver = receiver;
 
             string TransactionIDPrefix = type == "deposit" ? "DP" :
                                                 type == "withdrawal" ? "WD" : "TR";
-            _TransactionID = $"{TransactionIDPrefix}-1{++TransactionCounter}";
+            TransactionID = $"{TransactionIDPrefix}-1{++TransactionCounter}";
         }
 
+        public string Type { get => _type; set => _type = value; }
+        public double Amount { get => _amount; set => _amount = value; }
+        public string Currency { get => _currency; set => _currency = value; }
         public DateTime DateCreated { get => _DateCreated; }
-        public string Type { get => _type; }
-        public double Amount { get => _amount; }
-        public string SourceAccount { get => _SourceAccount; }
-        public string SourceAccountType { get => _SourceAccountType; }
-        public string DestinationAccount { get => _DestinationAccount; }
-        public string DestinationAccountType { get => _DestinationAccountType; }
-        public string TransactionID { get => _TransactionID; }
+        public string SourceAccount { get => _SourceAccount; set => _SourceAccount = value; }
+        public string SourceAccountType { get => _SourceAccountType; set => _SourceAccountType = value; }
+        public string DestinationAccount { get => _DestinationAccount; set => _DestinationAccount = value; }
+        public string DestinationAccountType { get => _DestinationAccountType; set => _DestinationAccountType = value; }
+        public string Sender { get => _sender; set => _sender = value; }
+        public string Receiver { get => _receiver; set => _receiver = value; }
+        public string TransactionID { get => _TransactionID; set => _TransactionID = value; }
     }
 }
