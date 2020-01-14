@@ -11,7 +11,14 @@ namespace BankLedgerApi
     {
         private static List<User> allUsers = new List<User>();
 
-        internal static List<User> AllUsers { get => AllUsers; }
+        public BankLedger()
+        {
+            //Create a super admin
+            User SuperAdmin = new Admin("Iyanu Akins", "admin@test.com", "000000", 3);
+            AllUsers.Add(SuperAdmin);
+        }
+
+        private static List<User> AllUsers { get => AllUsers; }
 
         public static bool RegisterCustomer()
         {
@@ -22,8 +29,13 @@ namespace BankLedgerApi
             do
             {
                 bool IsValidName = false;
+
                 do
                 {
+                    Console.WriteLine("================================================================");
+                    Console.WriteLine("                     Fill Registration Form                     ");
+                    Console.WriteLine("================================================================");
+
                     Console.Write("Enter First name and Last name: ");
                     name = Console.ReadLine();
                     IsValidName = Regex.IsMatch(name, @"^[A-Za-z\s.\'\-]+$", RegexOptions.IgnoreCase);
@@ -84,7 +96,9 @@ namespace BankLedgerApi
                 bool IsValidPassword = false;
                 do
                 {
+                    Console.WriteLine("----------------------------------------------------------------");
                     Console.WriteLine("\nNote:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols\n");
+                    Console.WriteLine("----------------------------------------------------------------");
                     Console.Write("Enter your desired password: ");
                     password = "";
                     do
@@ -96,7 +110,7 @@ namespace BankLedgerApi
                             password += key.KeyChar;
                             Random Rand = new Random();
                             int number = Rand.Next(1, 3);
-                            string Asterisks = "".PadLeft(number, 'X').Replace('X', '*');
+                            string Asterisks = "".PadLeft(number, '*');
                             Console.Write($"{Asterisks}");
                         }
                         else
@@ -127,7 +141,7 @@ namespace BankLedgerApi
                                 ConfirmPassword += key.KeyChar;
                                 Random Rand = new Random();
                                 int number = Rand.Next(1, 3);
-                                string Asterisks = "".PadLeft(number, 'X').Replace('X', '*');
+                                string Asterisks = "".PadLeft(number, '*');
                                 Console.Write($"{Asterisks}");
                             }
                             else
@@ -165,14 +179,18 @@ namespace BankLedgerApi
             Customer.TotalCustomer++;
             return true;
         }
-        public static Customer AuthenticateCustomer()
+
+        public static User AuthenticateCustomer()
         {
             bool IsRetry = true;
             string email = "";
             string password = "";
-            Customer LoggedUser = null;
+            User LoggedUser = null;
             do
             {
+                Console.WriteLine("================================================================");
+                Console.WriteLine("                     Fill Login Form                     ");
+                Console.WriteLine("================================================================");
                 bool IsValidEmail = false;
                 do
                 {
@@ -198,7 +216,7 @@ namespace BankLedgerApi
                         password += key.KeyChar;
                         Random Rand = new Random();
                         int number = Rand.Next(1, 3);
-                        string Asterisks = "".PadLeft(number, 'X').Replace('X', '*');
+                        string Asterisks = "".PadLeft(number, '*');
                         Console.Write($"{Asterisks}");
                     }
                     else
@@ -214,7 +232,7 @@ namespace BankLedgerApi
                         }
                     }
                 } while (true);
-                foreach (Customer customer in BankLedger.AllUsers)
+                foreach (User customer in BankLedger.AllUsers)
                 {
                     if (customer.Email == email && customer.Password == password)
                     {
@@ -246,9 +264,25 @@ namespace BankLedgerApi
 
             return LoggedUser;
         }
-        public static Customer GetCustomerByID(int id)
+
+        public void CreateAdmin(Admin admin, string name, string email, int level = 1)
         {
-            foreach (Customer customer in AllUsers)
+            if(admin.Level > 2)
+            {
+                //Create a super admin
+                User Admin = new Admin(name, email, "newadmin", level);
+                AllUsers.Add(Admin);
+                Console.WriteLine($"An administrative account of level {level} has been opened for {name}");
+            }
+            else
+            {
+                Console.WriteLine("Operation require higher clearance level");
+            }
+        }
+
+        public static User GetUserByID(int id)
+        {
+            foreach (User customer in AllUsers)
             {
                 if (customer.Id == id)
                 {
@@ -257,6 +291,7 @@ namespace BankLedgerApi
             }
             return null;
         }
+
         public static List<User> GetAllAllUsers()
         {
             List<User> AllCustomer = new List<User>();
@@ -270,6 +305,7 @@ namespace BankLedgerApi
 
             return AllCustomer.Count == 0 ? null : AllCustomer;
         }
+
         public static List<Account> GetAllAccounts()
         {
             return Account.AllAccounts;

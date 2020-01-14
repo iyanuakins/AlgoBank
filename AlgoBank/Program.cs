@@ -13,6 +13,7 @@ namespace AlgoBank
         {
             Console.WriteLine("Welcome to Algo Bank\n");
             bool IsCustomerSessionOn = false;
+            
             do
             {
                 int FirstSelectedOption;
@@ -43,7 +44,7 @@ namespace AlgoBank
                     if (LoggedInUser != null)
                     {
                         IsCustomerSessionOn = true;
-                        if (true /*LoggedInUser.IsAdmin*/)
+                        if (LoggedInUser.GetType() == typeof(Admin))
                         {
                             int[] AccountCount = BankLedger.GetTotalAccountCount();
                             Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
@@ -66,8 +67,8 @@ namespace AlgoBank
                                 bool IsValidOption = false;
                                 do
                                 {
-                                    Console.WriteLine("Enter 1 check account balance\n"+
-                                                       "Enter 2 to deposit\n"+
+                                    Console.WriteLine("1) => Check account balance\n"+
+                                                       "2 to deposit\n"+
                                                        "Enter 3 to withdraw\n"+
                                                        "Enter 4 to transfer\n"+
                                                        "Enter 5 to get account statement\n"+

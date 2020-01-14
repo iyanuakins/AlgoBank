@@ -8,13 +8,13 @@ namespace UserApi
     public class Customer : User
     {
         private List<Account> _accounts = new List<Account>();
-        public static int CustomerCount = 100;
+        private static int CustomerIdIncremetor = 100;
         public Customer(string name, string email, string password)
         {
             Name = name;
             Email = email;
             Password = password;
-            Id = ++CustomerCount;
+            Id = ++CustomerIdIncremetor;
         }
 
         internal List<Account> Accounts { get => _accounts; set => _accounts.AddRange(value); }
@@ -29,7 +29,7 @@ namespace UserApi
                 int i = 0;
                 foreach (Account account in Accounts)
                 {
-                    string line = $"Enter {++i} to select your {account.Type} with account number of {account.Number}";
+                    string line = $"{++i})    {account.Number} [{account.Type}]";
                     AccountNumbers.AppendLine(line);
                 }
                 Console.WriteLine("Please select account: ");
@@ -52,6 +52,7 @@ namespace UserApi
 
             return null;
         }
+
         public void CreateAccount()
         {
             Account NewAccount = new Account(Id, Name);

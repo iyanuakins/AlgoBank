@@ -12,7 +12,7 @@ namespace AccountApi
         private string _currency;
         private double _balance = 0.0;
         private DateTime _DateCreated = DateTime.Now;
-        private int _owner;
+        private int _Owner;
         private string _OwnerName;
         private static double totalAmountInBank = 0.0;
         private static int totalSavingsAccount = 0;
@@ -22,7 +22,6 @@ namespace AccountApi
         private static double _EURToNaira = 403.14;
         private static double _GBPToNaira = 473.5;
         private static List<Account> allAccounts = new List<Account>();
-
         private List<Transaction> _transactions = new List<Transaction>();
         private int _MinimumBalance = 0;
         public static int AccountPrefix = 10;
@@ -42,7 +41,7 @@ namespace AccountApi
         public string Currency { get => _currency; set => _currency = value; }
         public double Balance { get => _balance; set => _balance = value; }
         public DateTime DateCreated { get => _DateCreated; }
-        public int Owner { get => _owner; set => _owner = value; }
+        public int Owner { get => _Owner; set => _Owner = value; }
         public string OwnerName { get => _OwnerName; set => _OwnerName = value; }
         internal List<Transaction> Transactions { get => _transactions; set => _transactions.AddRange(value); }
         public int MinimumBalance { get => _MinimumBalance; set => _MinimumBalance = value; }
