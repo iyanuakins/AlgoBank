@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AccountApi;
 
-namespace AlgoBank
+namespace UserApi
 {
-    class Customer
+    public class Customer : User
     {
-        private int _id;
-        private string _name;
-        private string _email;
-        private string _password;
-        private bool _IsAdmin;
         private List<Account> _accounts = new List<Account>();
-        public static int CustomerCount = 0;
-        public Customer(string name, string email, string password, bool isAdmin)
+        public static int CustomerCount = 100;
+        public Customer(string name, string email, string password)
         {
             Name = name;
             Email = email;
             Password = password;
             Id = ++CustomerCount;
-            IsAdmin = isAdmin;
         }
 
-        public int Id { get => _id; set => _id = value; }
-        public string Name { get => _name; set => _name = value; }
-        public string Email { get => _email; set => _email = value; }
-        public string Password { get => _password; set => _password = value; }
         internal List<Account> Accounts { get => _accounts; set => _accounts.AddRange(value); }
-        public bool IsAdmin { get => _IsAdmin; set => _IsAdmin = value; }
+        public static int TotalCustomer { get; set; } = 0;
+
         public Account SelectAccount()
         {
             bool IsValid = false;
@@ -68,7 +60,7 @@ namespace AlgoBank
                 NewAccount
             };
             Accounts = AccountList;
-            BankLedger.AllAccounts.Add(NewAccount);
+            Account.AllAccounts.Add(NewAccount);
             string LastMessage = NewAccount.MinimumBalance == 0 ? "" : $"Your Minimum account balance is {NewAccount.Currency}{NewAccount.MinimumBalance}";
             Console.WriteLine();
             Console.WriteLine("Below are the details of newly created account:\n" +

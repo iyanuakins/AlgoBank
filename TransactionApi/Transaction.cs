@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace AlgoBank
+namespace TransactionApi
 {
-    class Transaction
+    public class Transaction
     {
         private string _type;
         private double _amount;
@@ -17,7 +16,8 @@ namespace AlgoBank
         private string _sender;
         private string _receiver;
         private string _Id;
-        public static int TransactionCounter = 10000107;
+        public static int TransactionCounter = 1000107;
+        private static List<Transaction> allTransactions = new List<Transaction>();
 
         public Transaction(
             string type,
@@ -57,5 +57,6 @@ namespace AlgoBank
         public string Sender { get => _sender; set => _sender = value; }
         public string Receiver { get => _receiver; set => _receiver = value; }
         public string Id { get => _Id; set => _Id = value; }
+        public static List<Transaction> AllTransactions { get => allTransactions; }
     }
 }

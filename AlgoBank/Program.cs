@@ -1,4 +1,9 @@
 ﻿using System;
+//using TransactionApi;
+using AccountApi;
+using UserApi;
+using BankLedgerApi;
+
 
 namespace AlgoBank
 {
@@ -38,18 +43,18 @@ namespace AlgoBank
                     if (LoggedInUser != null)
                     {
                         IsCustomerSessionOn = true;
-                        if (LoggedInUser.IsAdmin)
+                        if (true /*LoggedInUser.IsAdmin*/)
                         {
-                            int[] AccountCount = BankLedger.GetTotalAccountCount(LoggedInUser);
+                            int[] AccountCount = BankLedger.GetTotalAccountCount();
                             Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
                             Console.WriteLine("Below is summary of bank ledger:");
-                            Console.WriteLine($"A total of {(BankLedger.TotalCustomer - 1)} are operating a total of {AccountCount[3]}\n"+
+                            Console.WriteLine($"A total of {Customer.TotalCustomer} are operating a total of {AccountCount[3]}\n"+
                                                 "Breakdown:" +
                                                 $"Savings accounts: {AccountCount[0]}\n" +
                                                 $"Current accounts: {AccountCount[1]}\n" +
                                                 $"Domiciliary accounts: {AccountCount[2]}\n" +
                                                 "\n" +
-                                                $"Total Amount in bank: NGN{BankLedger.TotalAmountInBank}\n" +
+                                                $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
                                                 "\n");
                             //do
                             //{

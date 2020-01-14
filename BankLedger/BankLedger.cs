@@ -1,40 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
+using TransactionApi;
+using AccountApi;
+using UserApi;
 
-namespace AlgoBank
+namespace BankLedgerApi
 {
-    class BankLedger
+    public class BankLedger
     {
-        private static List<Customer> customers = new List<Customer>();
-        private static List<Account> allAccounts = new List<Account>();
-        private static List<Transaction> allTransactions = new List<Transaction>();
-        private static double totalAmountInBank = 0.0;
-        private static int totalCustomer = 0;
-        private static int totalSavingsAccount = 0;
-        private static int totalCurrentAccount = 0;
-        private static int totalDomiciliaryAccount = 0;
-        private static double uSDToNaira = 362.5;
-        private static double eURToNaira = 403.14;
-        private static double gBPToNaira = 473.5;
+        private static List<User> allUsers = new List<User>();
 
-        internal static List<Customer> Customers { get => customers; }
-        internal static List<Account> AllAccounts { get => allAccounts; }
-        internal static List<Transaction> AllTransactions { get => allTransactions; }
-        public static double TotalAmountInBank { get => totalAmountInBank; set => totalAmountInBank = value; }
-        public static int TotalCustomer { get => totalCustomer; set => totalCustomer = value; }
-        public static int TotalSavingsAccount { get => totalSavingsAccount; set => totalSavingsAccount = value; }
-        public static int TotalCurrentAccount { get => totalCurrentAccount; set => totalCurrentAccount = value; }
-        public static int TotalDomiciliaryAccount { get => totalDomiciliaryAccount; set => totalDomiciliaryAccount = value; }
-        public static double USDToNaira { get => uSDToNaira; }
-        public static double EURToNaira { get => eURToNaira; }
-        public static double GBPToNaira { get => gBPToNaira; }
+        internal static List<User> AllUsers { get => AllUsers; }
 
         public static bool RegisterCustomer()
         {
             bool IsValid = false;
-            bool IsAdmin = Customers.Count == 0 ? true : false;
             string name = "";
             string email = "";
             string password = "";
@@ -52,7 +33,7 @@ namespace AlgoBank
                         Console.WriteLine("\nPlease enter a valid name\n");
                     }
                 } while (!IsValidName);
-                
+
                 bool IsValidEmail = false;
                 do
                 {
@@ -65,11 +46,11 @@ namespace AlgoBank
                     {
                         Console.WriteLine("\nPlease enter a valid email address\n");
                     }
-                    else if (Customers.Count != 0)
+                    else if (AllUsers.Count != 0)
                     {
-                        foreach (Customer customer in BankLedger.Customers)
+                        foreach (User user in BankLedger.AllUsers)
                         {
-                            if (customer.Email == email)
+                            if (user.Email == email)
                             {
                                 IsValidEmail = false;
                                 Console.WriteLine("\nEmail already in use by another customer\nTry another email or try to login\n");
@@ -91,7 +72,7 @@ namespace AlgoBank
                                     }
                                 } while (option == 0);
 
-                                if(option == 2)
+                                if (option == 2)
                                 {
                                     return false;
                                 }
@@ -99,7 +80,7 @@ namespace AlgoBank
                         }
                     }
                 } while (!IsValidEmail);
-                
+
                 bool IsValidPassword = false;
                 do
                 {
@@ -179,9 +160,9 @@ namespace AlgoBank
                 IsValid = IsValidEmail && IsValidName && IsValidPassword;
             } while (!IsValid);
 
-            Customer NewCustomer = new Customer(name, email, password, IsAdmin);
-            BankLedger.Customers.Add(NewCustomer);
-            BankLedger.TotalCustomer++;
+            User NewCustomer = new Customer(name, email, password);
+            BankLedger.AllUsers.Add(NewCustomer);
+            Customer.TotalCustomer++;
             return true;
         }
         public static Customer AuthenticateCustomer()
@@ -205,7 +186,7 @@ namespace AlgoBank
                         Console.WriteLine("\nPlease enter a valid email address\n");
                     }
                 } while (!IsValidEmail);
-                
+
                 Console.Write("Enter your account password: ");
                 password = "";
                 do
@@ -233,7 +214,7 @@ namespace AlgoBank
                         }
                     }
                 } while (true);
-                foreach (Customer customer in BankLedger.Customers)
+                foreach (Customer customer in BankLedger.AllUsers)
                 {
                     if (customer.Email == email && customer.Password == password)
                     {
@@ -249,7 +230,7 @@ namespace AlgoBank
                     string UserInput = Console.ReadLine();
                     int SelectedOption;
                     bool IsValidInput = int.TryParse(UserInput, out SelectedOption);
-                    
+
                     if (IsValidInput && (SelectedOption == 1 || SelectedOption == 2))
                     {
                         option = SelectedOption;
@@ -267,7 +248,7 @@ namespace AlgoBank
         }
         public static Customer GetCustomerByID(int id)
         {
-            foreach (Customer customer in Customers)
+            foreach (Customer customer in AllUsers)
             {
                 if (customer.Id == id)
                 {
@@ -276,45 +257,40 @@ namespace AlgoBank
             }
             return null;
         }
-        public static List<Customer> GetAllCustomers(Customer customer)
+        public static List<User> GetAllAllUsers()
         {
-            if (customer.IsAdmin)
+            List<User> AllCustomer = new List<User>();
+            foreach (User customer in AllUsers)
             {
-                return Customers;
-            }
-
-            throw new Exception("\nUnauthorize access\n");
-        }
-        public static List<Account> GetAllAccounts(Customer customer)
-        {
-            if (customer.IsAdmin)
-            {
-                return AllAccounts;
-            }
-
-            throw new Exception("\nUnauthorize access\n");
-        }
-        public static List<Account> GetAllAccountsByType(Customer customer, string type)
-        {
-            if (customer.IsAdmin)
-            {
-                List<Account> AllAccount = new List<Account>();
-                foreach (Account account in AllAccounts)
+                if (customer.GetType() == typeof(Customer))
                 {
-                    if (account.Type == type)
-                    {
-                        AllAccount.Add(account);
-                    }
+                    AllCustomer.Add(customer);
                 }
-
-                return AllAccount;
             }
 
-            throw new Exception("\nUnauthorize access\n");
+            return AllCustomer.Count == 0 ? null : AllCustomer;
         }
+        public static List<Account> GetAllAccounts()
+        {
+            return Account.AllAccounts;
+        }
+
+        public static List<Account> GetAllAccountsByType(string type)
+        {
+            List<Account> AllAccount = new List<Account>();
+            foreach (Account account in Account.AllAccounts)
+            {
+                if (account.Type == type)
+                {
+                    AllAccount.Add(account);
+                }
+            }
+            return AllAccount.Count == 0 ? null : AllAccount;
+        }
+
         public static Account GetAccountByNumber(string number)
         {
-            foreach (Account account in AllAccounts)
+            foreach (Account account in Account.AllAccounts)
             {
                 if (account.Number == number)
                 {
@@ -324,56 +300,45 @@ namespace AlgoBank
 
             return null;
         }
-        public static List<Transaction> GetAllTransactions(Customer customer)
-        {
-            if (customer.IsAdmin)
-            {
-                return AllTransactions;
-            }
 
-            throw new Exception("\nUnauthorize access\n");
-        }
-        public static List<Transaction> GetAllTransactionsByType(Customer customer, string type)
+        public static List<Transaction> GetAllTransactions()
         {
-            if (customer.IsAdmin)
+            return Transaction.AllTransactions.Count == 0 ? null : Transaction.AllTransactions;
+        }
+
+        public static List<Transaction> GetAllTransactionsByType(string type)
+        {
+            List<Transaction> AllTransactions = new List<Transaction>();
+            foreach (Transaction transaction in Transaction.AllTransactions)
             {
-                List<Transaction> AllTransaction = new List<Transaction>();
-                foreach (Transaction transaction in AllTransactions)
+                if (transaction.Type == type)
                 {
-                    if (transaction.Type == type)
-                    {
-                        AllTransaction.Add(transaction);
-                    }
+                    AllTransactions.Add(transaction);
                 }
-
-                return AllTransaction;
             }
 
-            throw new Exception("\nUnauthorize access\n");
+            return AllTransactions.Count == 0 ? null : AllTransactions;
         }
-        public static Transaction GetTransactionByID(Customer customer, string id)
+
+        public static Transaction GetTransactionByID(string id)
         {
-            if (customer.IsAdmin)
+            foreach (Transaction transaction in Transaction.AllTransactions)
             {
-                foreach (Transaction transaction in AllTransactions)
+                if (transaction.Id == id)
                 {
-                    if (transaction.Id == id)
-                    {
-                        return transaction;
-                    }
+                    return transaction;
                 }
-                return null;
             }
-
-            throw new Exception("Unauthorize access");
+            return null;
         }
-        public static int[] GetTotalAccountCount(Customer customer)
+
+        public static int[] GetTotalAccountCount()
         {
             int[] TotalAccountCount = new int[4];
-            TotalAccountCount[0] = TotalSavingsAccount;
-            TotalAccountCount[1] = TotalCurrentAccount;
-            TotalAccountCount[2] = TotalDomiciliaryAccount;
-            TotalAccountCount[3] = TotalSavingsAccount + TotalDomiciliaryAccount + TotalCurrentAccount;
+            TotalAccountCount[0] = Account.TotalSavingsAccount;
+            TotalAccountCount[1] = Account.TotalCurrentAccount;
+            TotalAccountCount[2] = Account.TotalDomiciliaryAccount;
+            TotalAccountCount[3] = Account.TotalSavingsAccount + Account.TotalDomiciliaryAccount + Account.TotalCurrentAccount;
 
             return TotalAccountCount;
         }

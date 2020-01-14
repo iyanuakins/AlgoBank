@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TransactionApi;
 
-namespace AlgoBank
+namespace AccountApi
 {
-    class Account
+    public class Account
     {
         private string _type;
         private string _number;
@@ -13,6 +14,15 @@ namespace AlgoBank
         private DateTime _DateCreated = DateTime.Now;
         private int _owner;
         private string _OwnerName;
+        private static double totalAmountInBank = 0.0;
+        private static int totalSavingsAccount = 0;
+        private static int totalCurrentAccount = 0;
+        private static int totalDomiciliaryAccount = 0;
+        private static double _USDToNaira = 362.5;
+        private static double _EURToNaira = 403.14;
+        private static double _GBPToNaira = 473.5;
+        private static List<Account> allAccounts = new List<Account>();
+
         private List<Transaction> _transactions = new List<Transaction>();
         private int _MinimumBalance = 0;
         public static int AccountPrefix = 10;
@@ -36,6 +46,14 @@ namespace AlgoBank
         public string OwnerName { get => _OwnerName; set => _OwnerName = value; }
         internal List<Transaction> Transactions { get => _transactions; set => _transactions.AddRange(value); }
         public int MinimumBalance { get => _MinimumBalance; set => _MinimumBalance = value; }
+        public static double TotalAmountInBank { get => totalAmountInBank; set => totalAmountInBank = value; }
+        public static int TotalSavingsAccount { get => totalSavingsAccount; set => totalSavingsAccount = value; }
+        public static int TotalCurrentAccount { get => totalCurrentAccount; set => totalCurrentAccount = value; }
+        public static int TotalDomiciliaryAccount { get => totalDomiciliaryAccount; set => totalDomiciliaryAccount = value; }
+        public static double USDToNaira { get => _USDToNaira; }
+        public static double EURToNaira { get => _EURToNaira; }
+        public static double GBPToNaira { get => _GBPToNaira; }
+        public static List<Account> AllAccounts { get => allAccounts; }
 
         public string[] SelectOptions()
         {
@@ -115,8 +133,8 @@ namespace AlgoBank
             double rate = 1;
             if (Type == "domiciliary")
             {
-                rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                    Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                rate = Currency == "USD" ? USDToNaira :
+                                    Currency == "EUR" ? EURToNaira : GBPToNaira;
             }
             return $"{Currency}{(Balance / rate)}";
         }
@@ -129,19 +147,19 @@ namespace AlgoBank
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                        Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                    rate = Currency == "USD" ? USDToNaira :
+                                        Currency == "EUR" ? EURToNaira : GBPToNaira;
                     amount *= rate;
                 }
                 Balance += amount;
-                BankLedger.TotalAmountInBank += amount;
+                TotalAmountInBank += amount;
                 if (depositor == "self")
                 {
                     depositor = OwnerName;
                 }
                 Transaction TransactionDetails = new Transaction("deposit", (amount / rate), Currency, Number, Type, "", "", depositor, OwnerName);
                 Transactions.Add(TransactionDetails);
-                BankLedger.AllTransactions.Add(TransactionDetails);
+                Transaction.AllTransactions.Add(TransactionDetails);
                 return $"\nDeposit of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
             }
             return $"\nMininum amount to deposit is {Currency}1\n";
@@ -154,18 +172,18 @@ namespace AlgoBank
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                        Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                    rate = Currency == "USD" ? USDToNaira :
+                                        Currency == "EUR" ? EURToNaira : GBPToNaira;
                     amount *= rate;
                 }
 
                 if (Balance - MinimumBalance - amount >= 0)
                 {
                     Balance -= amount;
-                    BankLedger.TotalAmountInBank -= amount;
+                    TotalAmountInBank -= amount;
                     Transaction TransactionDetails = new Transaction("withdrawal", (amount / rate), Currency, "", "", Number, Type, "", OwnerName);
                     Transactions.Add(TransactionDetails);
-                    BankLedger.AllTransactions.Add(TransactionDetails);
+                    Transaction.AllTransactions.Add(TransactionDetails);
                     return $"\nWithdrawal of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
@@ -180,15 +198,15 @@ namespace AlgoBank
             return $"\nYou cannot withdraw below {Currency}1\n";
         }
 
-        public string Transfer(double amount, Account DestinationAccount) 
-        {   
+        public string Transfer(double amount, Account DestinationAccount)
+        {
             if (amount > 0)
             {
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                    rate = Currency == "USD" ? USDToNaira :
+                                Currency == "EUR" ? EURToNaira : GBPToNaira;
                     amount *= rate;
                 }
 
@@ -198,20 +216,21 @@ namespace AlgoBank
                     Balance -= amount;
                     Transaction TransactionDetails = new Transaction("transfer", (amount / rate), Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
                     Transactions.Add(TransactionDetails);
-                    BankLedger.AllTransactions.Add(TransactionDetails);
-                    
+                    Transaction.AllTransactions.Add(TransactionDetails);
+
                     //Credit the receiver
                     DestinationAccount.Balance += amount;
                     double ReceiverRate = 1;
                     if (DestinationAccount.Type == "domiciliary")
                     {
-                        ReceiverRate = DestinationAccount.Currency == "USD" ? BankLedger.USDToNaira :
-                                            DestinationAccount.Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                        
+                        ReceiverRate = DestinationAccount.Currency == "USD" ? USDToNaira :
+                                            DestinationAccount.Currency == "EUR" ? EURToNaira : GBPToNaira;
                         amount *= rate;
                     }
                     Transaction TransactionDetails2 = new Transaction("transfer", (amount / ReceiverRate), DestinationAccount.Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
                     DestinationAccount.Transactions.Add(TransactionDetails2);
-                    BankLedger.AllTransactions.Add(TransactionDetails2);
+                    Transaction.AllTransactions.Add(TransactionDetails2);
                     return $"\nTransfer of {Currency}{amount / rate} to {DestinationAccount.OwnerName}:({DestinationAccount.Number}) was successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
