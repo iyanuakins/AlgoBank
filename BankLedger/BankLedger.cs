@@ -9,16 +9,17 @@ namespace BankLedgerApi
 {
     public class BankLedger
     {
-        private static List<User> allUsers = new List<User>();
+        private static List<User> _AllUsers = new List<User>();
 
-        public BankLedger()
+        public static List<User> AllUsers { get => _AllUsers; }
+
+        public static void RegisterSuperAdmin()
         {
+
             //Create a super admin
             User SuperAdmin = new Admin("Iyanu Akins", "admin@test.com", "000000", 3);
             AllUsers.Add(SuperAdmin);
         }
-
-        private static List<User> AllUsers { get => AllUsers; }
 
         public static bool RegisterCustomer()
         {
@@ -175,7 +176,7 @@ namespace BankLedgerApi
             } while (!IsValid);
 
             User NewCustomer = new Customer(name, email, password);
-            BankLedger.AllUsers.Add(NewCustomer);
+            AllUsers.Add(NewCustomer);
             Customer.TotalCustomer++;
             return true;
         }
@@ -232,7 +233,7 @@ namespace BankLedgerApi
                         }
                     }
                 } while (true);
-                foreach (User customer in BankLedger.AllUsers)
+                foreach (User customer in AllUsers)
                 {
                     if (customer.Email == email && customer.Password == password)
                     {

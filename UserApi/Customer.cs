@@ -17,7 +17,7 @@ namespace UserApi
             Id = ++CustomerIdIncremetor;
         }
 
-        internal List<Account> Accounts { get => _accounts; set => _accounts.AddRange(value); }
+        public List<Account> Accounts { get => _accounts; set => _accounts.AddRange(value); }
         public static int TotalCustomer { get; set; } = 0;
 
         public Account SelectAccount()
