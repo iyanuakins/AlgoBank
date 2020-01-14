@@ -35,7 +35,7 @@ namespace AccountApi
             Type = options[0];
             Currency = options[1];
             MinimumBalance = Convert.ToInt32(options[2]);
-            Number = GenerateAccount();
+            Number = GenerateAccountNumber();
         }
         public string Type { get => _type; set => _type = value; }
         public string Number { get => _number; set => _number = value; }
@@ -69,55 +69,58 @@ namespace AccountApi
                 int SelectedOption;
                 IsValid = int.TryParse(FirstUserInput, out SelectedOption);
 
-                try
+                if (IsValid && (1 <= SelectedOption && SelectedOption <= 3))
                 {
-                    if (IsValid && (1 <= SelectedOption && SelectedOption <= 3))
+                    if (SelectedOption == 3)
                     {
-                        if (SelectedOption == 3)
+                        bool IsSecondInputValid = false;
+                        do
                         {
-                            bool IsSecondInputValid = false;
-                            do
+                            Console.WriteLine("Please select domiciliary account currency");
+                            Console.WriteLine("Enter 1 to select \"Dollar\"\nEnter 2 to select \"Euros\"\nEnter 3 to select \"Pound\"");
+                            string SecondUserInput = Console.ReadLine();
+                            int SecondSelectedOption;
+                            IsSecondInputValid = int.TryParse(SecondUserInput, out SecondSelectedOption);
+                            if (IsSecondInputValid && (1 <= SecondSelectedOption && SecondSelectedOption <= 3))
                             {
-                                Console.WriteLine("Please select domiciliary account currency");
-                                Console.WriteLine("Enter 1 to select \"Dollar\"\nEnter 2 to select \"Euros\"\nEnter 3 to select \"Pound\"");
-                                string SecondUserInput = Console.ReadLine();
-                                int SecondSelectedOption;
-                                IsSecondInputValid = int.TryParse(SecondUserInput, out SecondSelectedOption);
-                                if (IsSecondInputValid && (1 <= SecondSelectedOption && SecondSelectedOption <= 3))
+                                options[0] = "domiciliary";
+                                if (SecondSelectedOption == 1)
                                 {
-                                    options[0] = "domiciliary";
-                                    options[1] = SecondSelectedOption == 1 ? "USD" :
-                                                    SecondSelectedOption == 2 ? "EUR" : "GBP";
-                                    return options;
+                                    options[1] = "USD";
+                                }
+                                else if (SecondSelectedOption == 2)
+                                {
+                                    options[1] = "EUR";
                                 }
                                 else
                                 {
-                                    IsSecondInputValid = false;
-                                    throw new Exception("Please enter correct input");
+                                    options[1] = "GBP";
                                 }
-                            } while (!IsSecondInputValid);
-                        }
+                                return options;
+                            }
+                            else
+                            {
+                                IsSecondInputValid = false;
+                                Console.WriteLine("Please enter correct input");
+                            }
+                        } while (!IsSecondInputValid);
+                    }
 
-                        options[0] = SelectedOption == 1 ? "savings" : "current";
-                        options[2] = SelectedOption == 1 ? "1000" : "0";
-                        return options;
-                    }
-                    else
-                    {
-                        IsValid = false;
-                        throw new Exception("Please enter correct input");
-                    }
+                    options[0] = SelectedOption == 1 ? "savings" : "current";
+                    options[2] = SelectedOption == 1 ? "1000" : "0";
+                    return options;
                 }
-                catch (IndexOutOfRangeException)
+                else
                 {
                     IsValid = false;
-                    throw new Exception("Please enter correct input");
+                    Console.WriteLine("Please enter correct input");
                 }
-
             } while (!IsValid);
+
+            return options;
         }
 
-        public string GenerateAccount()
+        public string GenerateAccountNumber()
         {
             Random random = new Random();
             int RandomPartOne = random.Next(10, 99);
@@ -133,8 +136,18 @@ namespace AccountApi
             double rate = 1;
             if (Type == "domiciliary")
             {
-                rate = Currency == "USD" ? USDToNaira :
-                                    Currency == "EUR" ? EURToNaira : GBPToNaira;
+                if (Currency == "USD")
+                {
+                    rate = USDToNaira;
+                }
+                else if (Currency == "EUR")
+                {
+                    rate = EURToNaira;
+                }
+                else
+                {
+                    rate = GBPToNaira;
+                }
             }
             return $"{Currency}{(Balance / rate)}";
         }
@@ -147,8 +160,18 @@ namespace AccountApi
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? USDToNaira :
-                                        Currency == "EUR" ? EURToNaira : GBPToNaira;
+                    if (Currency == "USD")
+                    {
+                        rate = USDToNaira;
+                    }
+                    else if (Currency == "EUR")
+                    {
+                        rate = EURToNaira;
+                    }
+                    else
+                    {
+                        rate = GBPToNaira;
+                    }
                     amount *= rate;
                 }
                 Balance += amount;
@@ -172,8 +195,18 @@ namespace AccountApi
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? USDToNaira :
-                                        Currency == "EUR" ? EURToNaira : GBPToNaira;
+                    if (Currency == "USD")
+                    {
+                        rate = USDToNaira;
+                    }
+                    else if (Currency == "EUR")
+                    {
+                        rate = EURToNaira;
+                    }
+                    else
+                    {
+                        rate = GBPToNaira;
+                    }
                     amount *= rate;
                 }
 
@@ -205,8 +238,18 @@ namespace AccountApi
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? USDToNaira :
-                                Currency == "EUR" ? EURToNaira : GBPToNaira;
+                    if (Currency == "USD")
+                    {
+                        rate = USDToNaira;
+                    }
+                    else if (Currency == "EUR")
+                    {
+                        rate = EURToNaira;
+                    }
+                    else
+                    {
+                        rate = GBPToNaira;
+                    }
                     amount *= rate;
                 }
 
@@ -223,9 +266,18 @@ namespace AccountApi
                     double ReceiverRate = 1;
                     if (DestinationAccount.Type == "domiciliary")
                     {
-                        
-                        ReceiverRate = DestinationAccount.Currency == "USD" ? USDToNaira :
-                                            DestinationAccount.Currency == "EUR" ? EURToNaira : GBPToNaira;
+                        if (DestinationAccount.Currency == "USD")
+                        {
+                            ReceiverRate = USDToNaira;
+                        }
+                        else if (DestinationAccount.Currency == "EUR")
+                        {
+                            ReceiverRate = EURToNaira;
+                        }
+                        else
+                        {
+                            ReceiverRate = GBPToNaira;
+                        }
                         amount *= rate;
                     }
                     Transaction TransactionDetails2 = new Transaction("transfer", (amount / ReceiverRate), DestinationAccount.Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
