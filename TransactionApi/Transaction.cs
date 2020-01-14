@@ -17,7 +17,7 @@ namespace TransactionApi
         private string _receiver;
         private string _Id;
         public static int TransactionCounter = 1000107;
-        private static List<Transaction> allTransactions = new List<Transaction>();
+        private static List<Transaction> _AllTransactions = new List<Transaction>();
 
         public Transaction(
             string type,
@@ -41,8 +41,19 @@ namespace TransactionApi
             Sender = sender;
             Receiver = receiver;
 
-            string IdPrefix = type == "deposit" ? "DP" :
-                                    type == "withdrawal" ? "WD" : "TR";
+            string IdPrefix;
+            if(type == "deposit")
+            {
+                IdPrefix = "DP";
+            }
+            else if (type == "withdrawal")
+            {
+                IdPrefix = "WD";
+            }
+            else
+            {
+                IdPrefix = "TR";
+            }
             Id = $"{IdPrefix}-1{++TransactionCounter}";
         }
 
@@ -57,6 +68,6 @@ namespace TransactionApi
         public string Sender { get => _sender; set => _sender = value; }
         public string Receiver { get => _receiver; set => _receiver = value; }
         public string Id { get => _Id; set => _Id = value; }
-        public static List<Transaction> AllTransactions { get => allTransactions; }
+        public static List<Transaction> AllTransactions { get => _AllTransactions; }
     }
 }
