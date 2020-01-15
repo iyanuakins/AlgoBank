@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TransactionApi;
 
-namespace AlgoBank
+namespace AccountApi
 {
-    class Account
+    public class Account
     {
         private string _type;
         private string _number;
         private string _currency;
         private double _balance = 0.0;
         private DateTime _DateCreated = DateTime.Now;
-        private int _owner;
+        private int _Owner;
         private string _OwnerName;
+        private static double totalAmountInBank = 0.0;
+        private static int totalSavingsAccount = 0;
+        private static int totalCurrentAccount = 0;
+        private static int totalDomiciliaryAccount = 0;
+        private static double _USDToNaira = 362.5;
+        private static double _EURToNaira = 403.14;
+        private static double _GBPToNaira = 473.5;
+        private static List<Account> allAccounts = new List<Account>();
         private List<Transaction> _transactions = new List<Transaction>();
         private int _MinimumBalance = 0;
         public static int AccountPrefix = 10;
@@ -25,17 +34,25 @@ namespace AlgoBank
             Type = options[0];
             Currency = options[1];
             MinimumBalance = Convert.ToInt32(options[2]);
-            Number = GenerateAccount();
+            Number = GenerateAccountNumber();
         }
         public string Type { get => _type; set => _type = value; }
         public string Number { get => _number; set => _number = value; }
         public string Currency { get => _currency; set => _currency = value; }
         public double Balance { get => _balance; set => _balance = value; }
         public DateTime DateCreated { get => _DateCreated; }
-        public int Owner { get => _owner; set => _owner = value; }
+        public int Owner { get => _Owner; set => _Owner = value; }
         public string OwnerName { get => _OwnerName; set => _OwnerName = value; }
         internal List<Transaction> Transactions { get => _transactions; set => _transactions.AddRange(value); }
         public int MinimumBalance { get => _MinimumBalance; set => _MinimumBalance = value; }
+        public static double TotalAmountInBank { get => totalAmountInBank; set => totalAmountInBank = value; }
+        public static int TotalSavingsAccount { get => totalSavingsAccount; set => totalSavingsAccount = value; }
+        public static int TotalCurrentAccount { get => totalCurrentAccount; set => totalCurrentAccount = value; }
+        public static int TotalDomiciliaryAccount { get => totalDomiciliaryAccount; set => totalDomiciliaryAccount = value; }
+        public static double USDToNaira { get => _USDToNaira; }
+        public static double EURToNaira { get => _EURToNaira; }
+        public static double GBPToNaira { get => _GBPToNaira; }
+        public static List<Account> AllAccounts { get => allAccounts; }
 
         public string[] SelectOptions()
         {
@@ -45,61 +62,78 @@ namespace AlgoBank
             options[2] = "0";
             do
             {
-                Console.WriteLine("Please select account type");
-                Console.WriteLine("Enter 1 to select \"Savings\"\nEnter 2 to select \"Current\"\nEnter 3 to select \"Domiciliary\"");
+                Console.WriteLine("1)  =>  Savings\n" +
+                                  "2)  =>  Current\n" +
+                                  "3)  =>  Domicilary");
+                Console.Write("Select account type: ");
                 string FirstUserInput = Console.ReadLine();
                 int SelectedOption;
                 IsValid = int.TryParse(FirstUserInput, out SelectedOption);
 
-                try
+                if (IsValid && (1 <= SelectedOption && SelectedOption <= 3))
                 {
-                    if (IsValid && (1 <= SelectedOption && SelectedOption <= 3))
+                    if (SelectedOption == 3)
                     {
-                        if (SelectedOption == 3)
+                        bool IsSecondInputValid = false;
+                        do
                         {
-                            bool IsSecondInputValid = false;
-                            do
+                            Console.WriteLine();
+                            Console.WriteLine("1)  =>  Dollar\n" +
+                                              "2)  =>  Euros\n" +
+                                              "3)  =>  Pound");
+                            Console.Write("Select account currency: ");
+                            string SecondUserInput = Console.ReadLine();
+                            int SecondSelectedOption;
+                            IsSecondInputValid = int.TryParse(SecondUserInput, out SecondSelectedOption);
+                            if (IsSecondInputValid && (1 <= SecondSelectedOption && SecondSelectedOption <= 3))
                             {
-                                Console.WriteLine("Please select domiciliary account currency");
-                                Console.WriteLine("Enter 1 to select \"Dollar\"\nEnter 2 to select \"Euros\"\nEnter 3 to select \"Pound\"");
-                                string SecondUserInput = Console.ReadLine();
-                                int SecondSelectedOption;
-                                IsSecondInputValid = int.TryParse(SecondUserInput, out SecondSelectedOption);
-                                if (IsSecondInputValid && (1 <= SecondSelectedOption && SecondSelectedOption <= 3))
+                                options[0] = "domiciliary";
+                                if (SecondSelectedOption == 1)
                                 {
-                                    options[0] = "domiciliary";
-                                    options[1] = SecondSelectedOption == 1 ? "USD" :
-                                                    SecondSelectedOption == 2 ? "EUR" : "GBP";
-                                    return options;
+                                    options[1] = "USD";
+                                }
+                                else if (SecondSelectedOption == 2)
+                                {
+                                    options[1] = "EUR";
                                 }
                                 else
                                 {
-                                    IsSecondInputValid = false;
-                                    throw new Exception("Please enter correct input");
+                                    options[1] = "GBP";
                                 }
-                            } while (!IsSecondInputValid);
-                        }
+                                TotalDomiciliaryAccount++;
+                                return options;
+                            }
+                            else
+                            {
+                                IsSecondInputValid = false;
+                                Console.WriteLine("Please enter correct input\n");
+                            }
+                        } while (!IsSecondInputValid);
+                    }
 
-                        options[0] = SelectedOption == 1 ? "savings" : "current";
-                        options[2] = SelectedOption == 1 ? "1000" : "0";
-                        return options;
+                    if (SelectedOption == 1)
+                    {
+                        TotalSavingsAccount++;
                     }
                     else
                     {
-                        IsValid = false;
-                        throw new Exception("Please enter correct input");
+                        TotalCurrentAccount++;
                     }
+                    options[0] = SelectedOption == 1 ? "savings" : "current";
+                    options[2] = SelectedOption == 1 ? "1000" : "0";
+                    return options;
                 }
-                catch (IndexOutOfRangeException)
+                else
                 {
                     IsValid = false;
-                    throw new Exception("Please enter correct input");
+                    Console.WriteLine("Please enter correct input\n");
                 }
-
             } while (!IsValid);
+
+            return options;
         }
 
-        public string GenerateAccount()
+        public string GenerateAccountNumber()
         {
             Random random = new Random();
             int RandomPartOne = random.Next(10, 99);
@@ -115,8 +149,18 @@ namespace AlgoBank
             double rate = 1;
             if (Type == "domiciliary")
             {
-                rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                    Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                if (Currency == "USD")
+                {
+                    rate = USDToNaira;
+                }
+                else if (Currency == "EUR")
+                {
+                    rate = EURToNaira;
+                }
+                else
+                {
+                    rate = GBPToNaira;
+                }
             }
             return $"{Currency}{(Balance / rate)}";
         }
@@ -129,19 +173,29 @@ namespace AlgoBank
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                        Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                    if (Currency == "USD")
+                    {
+                        rate = USDToNaira;
+                    }
+                    else if (Currency == "EUR")
+                    {
+                        rate = EURToNaira;
+                    }
+                    else
+                    {
+                        rate = GBPToNaira;
+                    }
                     amount *= rate;
                 }
                 Balance += amount;
-                BankLedger.TotalAmountInBank += amount;
+                TotalAmountInBank += amount;
                 if (depositor == "self")
                 {
                     depositor = OwnerName;
                 }
                 Transaction TransactionDetails = new Transaction("deposit", (amount / rate), Currency, Number, Type, "", "", depositor, OwnerName);
                 Transactions.Add(TransactionDetails);
-                BankLedger.AllTransactions.Add(TransactionDetails);
+                Transaction.AllTransactions.Add(TransactionDetails);
                 return $"\nDeposit of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
             }
             return $"\nMininum amount to deposit is {Currency}1\n";
@@ -154,18 +208,28 @@ namespace AlgoBank
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                        Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                    if (Currency == "USD")
+                    {
+                        rate = USDToNaira;
+                    }
+                    else if (Currency == "EUR")
+                    {
+                        rate = EURToNaira;
+                    }
+                    else
+                    {
+                        rate = GBPToNaira;
+                    }
                     amount *= rate;
                 }
 
                 if (Balance - MinimumBalance - amount >= 0)
                 {
                     Balance -= amount;
-                    BankLedger.TotalAmountInBank -= amount;
+                    TotalAmountInBank -= amount;
                     Transaction TransactionDetails = new Transaction("withdrawal", (amount / rate), Currency, "", "", Number, Type, "", OwnerName);
                     Transactions.Add(TransactionDetails);
-                    BankLedger.AllTransactions.Add(TransactionDetails);
+                    Transaction.AllTransactions.Add(TransactionDetails);
                     return $"\nWithdrawal of {Currency}{amount / rate} is successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
@@ -180,15 +244,25 @@ namespace AlgoBank
             return $"\nYou cannot withdraw below {Currency}1\n";
         }
 
-        public string Transfer(double amount, Account DestinationAccount) 
-        {   
+        public string Transfer(double amount, Account DestinationAccount)
+        {
             if (amount > 0)
             {
                 double rate = 1;
                 if (Type == "domiciliary")
                 {
-                    rate = Currency == "USD" ? BankLedger.USDToNaira :
-                                Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                    if (Currency == "USD")
+                    {
+                        rate = USDToNaira;
+                    }
+                    else if (Currency == "EUR")
+                    {
+                        rate = EURToNaira;
+                    }
+                    else
+                    {
+                        rate = GBPToNaira;
+                    }
                     amount *= rate;
                 }
 
@@ -198,20 +272,30 @@ namespace AlgoBank
                     Balance -= amount;
                     Transaction TransactionDetails = new Transaction("transfer", (amount / rate), Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
                     Transactions.Add(TransactionDetails);
-                    BankLedger.AllTransactions.Add(TransactionDetails);
-                    
+                    Transaction.AllTransactions.Add(TransactionDetails);
+
                     //Credit the receiver
                     DestinationAccount.Balance += amount;
                     double ReceiverRate = 1;
                     if (DestinationAccount.Type == "domiciliary")
                     {
-                        ReceiverRate = DestinationAccount.Currency == "USD" ? BankLedger.USDToNaira :
-                                            DestinationAccount.Currency == "EUR" ? BankLedger.EURToNaira : BankLedger.GBPToNaira;
+                        if (DestinationAccount.Currency == "USD")
+                        {
+                            ReceiverRate = USDToNaira;
+                        }
+                        else if (DestinationAccount.Currency == "EUR")
+                        {
+                            ReceiverRate = EURToNaira;
+                        }
+                        else
+                        {
+                            ReceiverRate = GBPToNaira;
+                        }
                         amount *= rate;
                     }
                     Transaction TransactionDetails2 = new Transaction("transfer", (amount / ReceiverRate), DestinationAccount.Currency, Number, Type, DestinationAccount.Number, DestinationAccount.Type, OwnerName, DestinationAccount.OwnerName);
                     DestinationAccount.Transactions.Add(TransactionDetails2);
-                    BankLedger.AllTransactions.Add(TransactionDetails2);
+                    Transaction.AllTransactions.Add(TransactionDetails2);
                     return $"\nTransfer of {Currency}{amount / rate} to {DestinationAccount.OwnerName}:({DestinationAccount.Number}) was successful.\nNew balance is: {Currency}{(Balance / rate)}\n";
                 }
 
