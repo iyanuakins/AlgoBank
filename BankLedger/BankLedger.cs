@@ -42,7 +42,6 @@ namespace BankLedgerApi
                     IsValidName = Regex.IsMatch(name, @"^[A-Za-z\s.\'\-]+$", RegexOptions.IgnoreCase);
                     if (!IsValidName)
                     {
-                        //@"^[\.'\-]+$"
                         Console.WriteLine("\nPlease enter a valid name\n");
                     }
                 } while (!IsValidName);
