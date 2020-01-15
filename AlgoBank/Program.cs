@@ -20,7 +20,10 @@ namespace AlgoBank
                 bool IsValid = false;
                 do
                 {
-                    Console.WriteLine("Enter 1 register\nEnter 2 to login\nEnter 3 to exit");
+                    Console.WriteLine("1)  =>  Register\n" +
+                                      "2)  =>  Login\n" +
+                                      "3)  =>  Exit bank");
+                    Console.Write("Select option: ");
                     string UserInput = Console.ReadLine();
                     IsValid = int.TryParse(UserInput, out FirstSelectedOption);
                     if (!(IsValid && (1 <= FirstSelectedOption && FirstSelectedOption <= 3)))
@@ -48,21 +51,45 @@ namespace AlgoBank
                         {
                             Admin LoggedInUser = (Admin)AuthenticatedUser;
                             int[] AccountCount = BankLedger.GetTotalAccountCount();
-                            Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
-                            Console.WriteLine("Below is summary of bank ledger:");
-                            Console.WriteLine($"A total of {Customer.TotalCustomer} are operating a total of {AccountCount[3]}\n" +
-                                                "Breakdown:" +
-                                                $"Savings accounts: {AccountCount[0]}\n" +
-                                                $"Current accounts: {AccountCount[1]}\n" +
-                                                $"Domiciliary accounts: {AccountCount[2]}\n" +
-                                                "\n" +
-                                                $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
-                                                "\n");
+                            bool ShowSummary = true;
+                            if (ShowSummary)
+                            {
+                                Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
+                                Console.WriteLine("================================================================");
+                                Console.WriteLine("                           Bank ledger summary            ");
+                                Console.WriteLine("================================================================"); 
+                                Console.WriteLine($"A total of {Customer.TotalCustomer} customer(s) are operating a total of {AccountCount[3]} account(s)\n" +
+                                                    "Breakdown:\n" +
+                                                    $"Savings accounts: {AccountCount[0]}\n" +
+                                                    $"Current accounts: {AccountCount[1]}\n" +
+                                                    $"Domiciliary accounts: {AccountCount[2]}\n" +
+                                                    "\n" +
+                                                    $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
+                                                    "\n");
+                                ShowSummary = false;
+                            }
+                            string CreateAdmin = LoggedInUser.Level < 3 ? "Create Admins (Unavailbale)" : "Create Admins";
+                            string ManageAdmin = LoggedInUser.Level < 3 ? "Manage Admins (Unavailbale)" : "Manage Admins";
+                            Console.WriteLine("============================================");
+                            Console.WriteLine("             Available Operations         ");
+                            Console.WriteLine("=============================================");
+                            Console.WriteLine("1) => View all customers\n" +
+                                               "2) => Get customer by ID\n" +
+                                               "3) => View all administrators\n" +
+                                               "4) => View all bank accounts\n" +
+                                               "5) => View bank accounts by type\n" +
+                                               "6) => View all transctions\n" +
+                                               "7) => View transction by reference number\n" +
+                                               $"8) => {ManageAdmin}\n" +
+                                               $"9) => {CreateAdmin}\n" +
+                                               "0) => Log out\n");
+                            Console.WriteLine();
                             IsUserSessionOn = false;
                         }
                         else
                         {
                             Customer LoggedInUser = (Customer)AuthenticatedUser;
+                            Console.WriteLine();
                             Console.Write($"Welcome {LoggedInUser.Name} ");
                             if (LoggedInUser.Accounts.Count == 0)
                             {
@@ -162,7 +189,7 @@ namespace AlgoBank
 
                                         do
                                         {
-                                            Console.WriteLine("Enter amount you want to transfer\n");
+                                            Console.Write("Enter amount: ");
                                             string UserInput = Console.ReadLine();
                                             IsValidAmount = double.TryParse(UserInput, out amount);
                                             if (!IsValidAmount)
@@ -173,7 +200,7 @@ namespace AlgoBank
 
                                         do
                                         {
-                                            Console.WriteLine("Enter recipient account number\n");
+                                            Console.Write("Enter recipient account number: ");
                                             string UserInput = Console.ReadLine();
                                             int Account;
                                             IsValidAccount = int.TryParse(UserInput, out Account);
@@ -249,7 +276,10 @@ namespace AlgoBank
                                         LoggedInUser.CreateAccount();
                                         break;
                                     default:
+                                        Console.WriteLine();
+                                        Console.WriteLine("====================================================");
                                         Console.WriteLine($"{LoggedInUser.Name} thanks for banking with us\n");
+                                        Console.WriteLine("====================================================");
                                         LoggedInUser = null;
                                         IsUserSessionOn = false;
                                         break;

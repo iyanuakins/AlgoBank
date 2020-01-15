@@ -98,7 +98,7 @@ namespace BankLedgerApi
                 do
                 {
                     Console.WriteLine("----------------------------------------------------------------");
-                    Console.WriteLine("\nNote:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols\n");
+                    Console.WriteLine("Note:\n1. Password should be minimun of 6 and maximum of 32 characters\n2. Password Can contain alphabets, number and symbols");
                     Console.WriteLine("----------------------------------------------------------------");
                     Console.Write("Enter your desired password: ");
                     password = "";

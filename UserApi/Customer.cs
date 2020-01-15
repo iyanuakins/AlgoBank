@@ -32,8 +32,9 @@ namespace UserApi
                     string line = $"{++i})    {account.Number} [{account.Type}]";
                     AccountNumbers.AppendLine(line);
                 }
-                Console.WriteLine("Please select account: ");
+                Console.WriteLine();
                 Console.Write(AccountNumbers);
+                Console.Write("Please select account: ");
                 string UserInput = Console.ReadLine();
                 int SelectedOption;
                 IsValid = int.TryParse(UserInput, out SelectedOption);

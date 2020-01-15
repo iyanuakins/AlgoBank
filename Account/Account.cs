@@ -62,8 +62,10 @@ namespace AccountApi
             options[2] = "0";
             do
             {
-                Console.WriteLine("Please select account type");
-                Console.WriteLine("Enter 1 to select \"Savings\"\nEnter 2 to select \"Current\"\nEnter 3 to select \"Domiciliary\"");
+                Console.WriteLine("1)  =>  Savings\n" +
+                                  "2)  =>  Current\n" +
+                                  "3)  =>  Domicilary");
+                Console.Write("Select account type: ");
                 string FirstUserInput = Console.ReadLine();
                 int SelectedOption;
                 IsValid = int.TryParse(FirstUserInput, out SelectedOption);
@@ -75,8 +77,11 @@ namespace AccountApi
                         bool IsSecondInputValid = false;
                         do
                         {
-                            Console.WriteLine("Please select domiciliary account currency");
-                            Console.WriteLine("Enter 1 to select \"Dollar\"\nEnter 2 to select \"Euros\"\nEnter 3 to select \"Pound\"");
+                            Console.WriteLine();
+                            Console.WriteLine("1)  =>  Dollar\n" +
+                                              "2)  =>  Euros\n" +
+                                              "3)  =>  Pound");
+                            Console.Write("Select account currency: ");
                             string SecondUserInput = Console.ReadLine();
                             int SecondSelectedOption;
                             IsSecondInputValid = int.TryParse(SecondUserInput, out SecondSelectedOption);
@@ -95,16 +100,25 @@ namespace AccountApi
                                 {
                                     options[1] = "GBP";
                                 }
+                                TotalDomiciliaryAccount++;
                                 return options;
                             }
                             else
                             {
                                 IsSecondInputValid = false;
-                                Console.WriteLine("Please enter correct input");
+                                Console.WriteLine("Please enter correct input\n");
                             }
                         } while (!IsSecondInputValid);
                     }
 
+                    if (SelectedOption == 1)
+                    {
+                        TotalSavingsAccount++;
+                    }
+                    else
+                    {
+                        TotalCurrentAccount++;
+                    }
                     options[0] = SelectedOption == 1 ? "savings" : "current";
                     options[2] = SelectedOption == 1 ? "1000" : "0";
                     return options;
@@ -112,7 +126,7 @@ namespace AccountApi
                 else
                 {
                     IsValid = false;
-                    Console.WriteLine("Please enter correct input");
+                    Console.WriteLine("Please enter correct input\n");
                 }
             } while (!IsValid);
 
