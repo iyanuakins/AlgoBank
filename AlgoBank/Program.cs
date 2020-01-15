@@ -116,7 +116,33 @@ namespace AlgoBank
                                         }
                                         break;
                                     case 2:
-                                        Console.WriteLine("Todo");
+                                        bool IsValidOption2 = false;
+                                        int UserID;
+                                        do
+                                        {
+                                            Console.Write("Enter user id: ");
+                                            string UserInputForOption = Console.ReadLine();
+                                            IsValidOption2 = int.TryParse(UserInputForOption, out UserID);
+                                            if (!IsValidOption2)
+                                            {
+                                                IsValidOption2 = false;
+                                                Console.WriteLine("\nEnter valid user id\n");
+                                            }
+                                        } while (!IsValidOption2);
+                                        Customer customer = (Customer)BankLedger.GetUserByID(UserID);
+                                        if (customer == null)
+                                        {
+                                            Console.WriteLine("User not found.\n");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine($"Date registered: {customer.DateRegistered}");
+                                            Console.WriteLine($"Date registered: {customer.Id}");
+                                            Console.WriteLine($"Date registered: {customer.Name}");
+                                            Console.WriteLine("All Account operated by this user\n");
+                                            //customer.GetAccountOverview();
+                                        }
                                         break;
                                     case 3:
                                         Console.WriteLine("Todo");
