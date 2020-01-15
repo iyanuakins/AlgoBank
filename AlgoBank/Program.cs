@@ -3,7 +3,8 @@
 using AccountApi;
 using UserApi;
 using BankLedgerApi;
-
+using System.Collections.Generic;
+using System.Text;
 
 namespace AlgoBank
 {
@@ -51,40 +52,103 @@ namespace AlgoBank
                         {
                             Admin LoggedInUser = (Admin)AuthenticatedUser;
                             int[] AccountCount = BankLedger.GetTotalAccountCount();
-                            bool ShowSummary = true;
-                            if (ShowSummary)
+                            Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
+                            Console.WriteLine("================================================================");
+                            Console.WriteLine("                           Bank ledger summary            ");
+                            Console.WriteLine("================================================================"); 
+                            Console.WriteLine($"A total of {Customer.TotalCustomer} customer(s) are operating a total of {AccountCount[3]} account(s)\n" +
+                                                "Breakdown:\n" +
+                                                $"Savings accounts: {AccountCount[0]}\n" +
+                                                $"Current accounts: {AccountCount[1]}\n" +
+                                                $"Domiciliary accounts: {AccountCount[2]}\n" +
+                                                "\n" +
+                                                $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
+                                                "\n");
+                            do
                             {
-                                Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
-                                Console.WriteLine("================================================================");
-                                Console.WriteLine("                           Bank ledger summary            ");
-                                Console.WriteLine("================================================================"); 
-                                Console.WriteLine($"A total of {Customer.TotalCustomer} customer(s) are operating a total of {AccountCount[3]} account(s)\n" +
-                                                    "Breakdown:\n" +
-                                                    $"Savings accounts: {AccountCount[0]}\n" +
-                                                    $"Current accounts: {AccountCount[1]}\n" +
-                                                    $"Domiciliary accounts: {AccountCount[2]}\n" +
-                                                    "\n" +
-                                                    $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
-                                                    "\n");
-                                ShowSummary = false;
-                            }
-                            string CreateAdmin = LoggedInUser.Level < 3 ? "Create Admins (Unavailbale)" : "Create Admins";
-                            string ManageAdmin = LoggedInUser.Level < 3 ? "Manage Admins (Unavailbale)" : "Manage Admins";
-                            Console.WriteLine("============================================");
-                            Console.WriteLine("             Available Operations         ");
-                            Console.WriteLine("=============================================");
-                            Console.WriteLine("1) => View all customers\n" +
-                                               "2) => Get customer by ID\n" +
-                                               "3) => View all administrators\n" +
-                                               "4) => View all bank accounts\n" +
-                                               "5) => View bank accounts by type\n" +
-                                               "6) => View all transctions\n" +
-                                               "7) => View transction by reference number\n" +
-                                               $"8) => {ManageAdmin}\n" +
-                                               $"9) => {CreateAdmin}\n" +
-                                               "0) => Log out\n");
-                            Console.WriteLine();
-                            IsUserSessionOn = false;
+                                int SecondSelectedOption;
+                                bool IsValidOption = false;
+                                do
+                                {
+                                    string CreateAdmin = LoggedInUser.Level < 3 ? "Create Admins (Unavailbale)" : "Create Admins";
+                                    string ManageAdmin = LoggedInUser.Level < 3 ? "Manage Admins (Unavailbale)" : "Manage Admins";
+                                    Console.WriteLine("============================================");
+                                    Console.WriteLine("             Available Operations         ");
+                                    Console.WriteLine("=============================================");
+                                    Console.WriteLine("1) => View all customers\n" +
+                                                       "2) => Get customer by ID\n" +
+                                                       "3) => View all administrators\n" +
+                                                       "4) => View all bank accounts\n" +
+                                                       "5) => View bank accounts by type\n" +
+                                                       "6) => View all transctions\n" +
+                                                       "7) => View transction by reference number\n" +
+                                                       $"8) => {ManageAdmin}\n" +
+                                                       $"9) => {CreateAdmin}\n" +
+                                                       "0) => Log out\n");
+                                    Console.Write("Select operation: ");
+                                    string UserInputForOperation = Console.ReadLine();
+                                    IsValidOption = int.TryParse(UserInputForOperation, out SecondSelectedOption);
+                                    if (!(IsValidOption && (0 <= SecondSelectedOption || SecondSelectedOption <= 9)))
+                                    {
+                                        IsValidOption = false;
+                                        Console.WriteLine("Invalid option, Please select valid option\n");
+                                    }
+                                } while (!IsValidOption);
+
+                                switch (SecondSelectedOption)
+                                {
+                                    case 1:
+                                        List<Customer> AllCUstomers = BankLedger.GetAllAllUsers();
+                                        if (AllCUstomers == null)
+                                        {
+                                            Console.WriteLine("No registered customer yet.\n");
+                                        }
+                                        else
+                                        {
+                                            StringBuilder ResultList = new StringBuilder();
+                                            ResultList.AppendLine("| Customer ID |     Name      | Date Registered |");
+                                            foreach (Customer customer in AllCUstomers)
+                                            {
+                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", customer.DateRegistered);
+                                                ResultList.AppendLine($"| {customer.Id} | {customer.Name} |  {date} |");
+                                            }
+                                            Console.WriteLine(ResultList.ToString());
+                                        }
+                                        break;
+                                    case 2:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 3:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 4:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 5:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 6:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 7:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 8:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    case 9:
+                                        Console.WriteLine("Todo");
+                                        break;
+                                    default:
+                                        Console.WriteLine();
+                                        Console.WriteLine("====================================================");
+                                        Console.WriteLine($"{LoggedInUser.Name}, you are now logged out\n");
+                                        Console.WriteLine("====================================================");
+                                        LoggedInUser = null;
+                                        IsUserSessionOn = false;
+                                        break;
+                                }
+                            } while (IsUserSessionOn);
                         }
                         else
                         {
@@ -95,7 +159,7 @@ namespace AlgoBank
                             {
                                 Console.WriteLine();
                                 Console.WriteLine("We are happy to have you on board.\n");
-                                Console.WriteLine("Please open your first account");
+                                Console.WriteLine("Please open your first account\n");
                                 LoggedInUser.CreateAccount();
                             }
 
