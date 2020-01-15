@@ -145,7 +145,25 @@ namespace AlgoBank
                                         }
                                         break;
                                     case 3:
-                                        Console.WriteLine("Todo");
+                                        List<Account> AllAccounts = BankLedger.GetAllAccounts();
+                                        if (AllAccounts == null)
+                                        {
+                                            Console.WriteLine("\nNo Account created yet\n");
+                                        }
+                                        else
+                                        {
+                                            StringBuilder statement = new StringBuilder();
+                                            statement.AppendLine();
+                                            statement.AppendLine("| Account type | Account number |      Owner      | Date created |");
+                                            foreach (Account account in AllAccounts)
+                                            {
+                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", account.DateCreated);
+                                                statement.AppendLine($"| {account.Type} | {account.Number} | {account.OwnerName} |   {date}   |");
+                                            }
+                                            statement.AppendLine();
+                                            Console.WriteLine(statement.ToString());
+                                            Console.WriteLine();
+                                        }
                                         break;
                                     case 4:
                                         Console.WriteLine("Todo");
