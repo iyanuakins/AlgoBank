@@ -107,10 +107,10 @@ namespace AlgoBank
                                         {
                                             StringBuilder ResultList = new StringBuilder();
                                             ResultList.AppendLine("| Customer ID |     Name      | Date Registered |");
-                                            foreach (Customer customer in AllCUstomers)
+                                            foreach (Customer ThisCustomer in AllCUstomers)
                                             {
-                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", customer.DateRegistered);
-                                                ResultList.AppendLine($"| {customer.Id} | {customer.Name} |  {date} |");
+                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", ThisCustomer.DateRegistered);
+                                                ResultList.AppendLine($"| {ThisCustomer.Id} |    {ThisCustomer.Name}    | {date} |");
                                             }
                                             Console.WriteLine(ResultList.ToString());
                                         }
@@ -138,13 +138,14 @@ namespace AlgoBank
                                         {
                                             Console.WriteLine();
                                             Console.WriteLine($"Date registered: {customer.DateRegistered}");
-                                            Console.WriteLine($"Date registered: {customer.Id}");
-                                            Console.WriteLine($"Date registered: {customer.Name}");
+                                            Console.WriteLine($"Customer ID: {customer.Id}");
+                                            Console.WriteLine($"Customer name: {customer.Name}");
                                             Console.WriteLine("All Account operated by this user\n");
                                             //customer.GetAccountOverview();
                                         }
                                         break;
                                     case 3:
+                                        //Get all accounts
                                         List<Account> AllAccounts = BankLedger.GetAllAccounts();
                                         if (AllAccounts == null)
                                         {
@@ -166,7 +167,9 @@ namespace AlgoBank
                                         }
                                         break;
                                     case 4:
-                                        Console.WriteLine("Todo");
+                                        Console.Write("Enter account type to fetch: ");
+                                        string AccountType = Console.ReadLine();
+                                        List<Account> AllAccountType = BankLedger.GetAllAccountsByType(AccountType);
                                         break;
                                     case 5:
                                         Console.WriteLine("Todo");
