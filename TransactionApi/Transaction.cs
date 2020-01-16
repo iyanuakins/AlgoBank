@@ -5,17 +5,17 @@ namespace TransactionApi
 {
     public class Transaction
     {
-        private string _type;
-        private double _amount;
-        private string _currency;
-        private DateTime _DateCreated = DateTime.Now;
-        private string _SourceAccount;
-        private string _SourceAccountType;
-        private string _DestinationAccount;
-        private string _DestinationAccountType;
-        private string _sender;
-        private string _receiver;
-        private string _Id;
+        private readonly string _type;
+        private readonly double _amount;
+        private readonly string _currency;
+        private readonly DateTime _DateCreated = DateTime.Now;
+        private readonly string _SourceAccount;
+        private readonly string _SourceAccountType;
+        private readonly string _DestinationAccount;
+        private readonly string _DestinationAccountType;
+        private readonly string _sender;
+        private readonly string _receiver;
+        private readonly string _Id;
         public static int TransactionCounter = 1000107;
         private static List<Transaction> _AllTransactions = new List<Transaction>();
 
@@ -31,15 +31,15 @@ namespace TransactionApi
             string receiver
             )
         {
-            Type = type;
-            Amount = amount;
-            Currency = currency;
-            this.SourceAccount = SourceAccount;
-            this.SourceAccountType = SourceAccountType;
-            this.DestinationAccount = DestinationAccount;
-            this.DestinationAccountType = DestinationAccountType;
-            Sender = sender;
-            Receiver = receiver;
+            _type = type;
+            _amount = amount;
+            _currency = currency;
+            _SourceAccount = SourceAccount;
+            _SourceAccountType = SourceAccountType;
+            _DestinationAccount = DestinationAccount;
+            _DestinationAccountType = DestinationAccountType;
+            _sender = sender;
+            _receiver = receiver;
 
             string IdPrefix;
             if(type == "deposit")
@@ -54,20 +54,20 @@ namespace TransactionApi
             {
                 IdPrefix = "TR";
             }
-            Id = $"{IdPrefix}-1{++TransactionCounter}";
+            _Id = $"{IdPrefix}-1{++TransactionCounter}";
         }
 
-        public string Type { get => _type; set => _type = value; }
-        public double Amount { get => _amount; set => _amount = value; }
-        public string Currency { get => _currency; set => _currency = value; }
+        public string Type { get => _type; }
+        public double Amount { get => _amount; }
+        public string Currency { get => _currency; }
         public DateTime DateCreated { get => _DateCreated; }
-        public string SourceAccount { get => _SourceAccount; set => _SourceAccount = value; }
-        public string SourceAccountType { get => _SourceAccountType; set => _SourceAccountType = value; }
-        public string DestinationAccount { get => _DestinationAccount; set => _DestinationAccount = value; }
-        public string DestinationAccountType { get => _DestinationAccountType; set => _DestinationAccountType = value; }
-        public string Sender { get => _sender; set => _sender = value; }
-        public string Receiver { get => _receiver; set => _receiver = value; }
-        public string Id { get => _Id; set => _Id = value; }
+        public string SourceAccount { get => _SourceAccount; }
+        public string SourceAccountType { get => _SourceAccountType; }
+        public string DestinationAccount { get => _DestinationAccount; }
+        public string DestinationAccountType { get => _DestinationAccountType; }
+        public string Sender { get => _sender; }
+        public string Receiver { get => _receiver; }
+        public string Id { get => _Id; }
         public static List<Transaction> AllTransactions { get => _AllTransactions; }
     }
 }

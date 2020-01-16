@@ -29,7 +29,7 @@ namespace UserApi
                 int i = 0;
                 foreach (Account account in Accounts)
                 {
-                    string line = $"{++i})    {account.Number} [{account.Type}]";
+                    string line = $"{++i}) =>   {account.Number} [{account.Type}]";
                     AccountNumbers.AppendLine(line);
                 }
                 Console.WriteLine();
@@ -72,6 +72,28 @@ namespace UserApi
                                 $"Account currency: {NewAccount.Currency}\n" +
                                 $"{LastMessage}");
             Console.WriteLine();
+        }
+
+        public void GetAccountsOverview()
+        {
+            if(Accounts.Count == 0)
+            {
+                Console.WriteLine("\nNo account available\n");
+            }
+            else
+            {
+                StringBuilder statement = new StringBuilder();
+                statement.AppendLine();
+                statement.AppendLine("| Account type | Account number |      Account Balance      | Date created |");
+                foreach (Account account in Accounts)
+                {
+                    string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", account.DateCreated);
+                    statement.AppendLine($"| {account.Type} | {account.Number} | {account.Currency}{account.Balance} |   {date}   |");
+                }
+                statement.AppendLine();
+                Console.WriteLine(statement.ToString());
+                Console.WriteLine();
+            }
         }
     }
 }

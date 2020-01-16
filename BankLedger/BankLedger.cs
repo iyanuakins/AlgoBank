@@ -60,7 +60,7 @@ namespace BankLedgerApi
                     }
                     else if (AllUsers.Count != 0)
                     {
-                        foreach (User user in BankLedger.AllUsers)
+                        foreach (User user in AllUsers)
                         {
                             if (user.Email == email)
                             {
@@ -265,19 +265,12 @@ namespace BankLedgerApi
             return LoggedUser;
         }
 
-        public void CreateAdmin(Admin admin, string name, string email, int level = 1)
+        public static void CreateAdmin(string name, string email, int level = 1)
         {
-            if(admin.Level > 2)
-            {
-                //Create a super admin
-                User Admin = new Admin(name, email, "newadmin", level);
-                AllUsers.Add(Admin);
-                Console.WriteLine($"An administrative account of level {level} has been opened for {name}");
-            }
-            else
-            {
-                Console.WriteLine("Operation require higher clearance level");
-            }
+            //Create a super admin
+            User Admin = new Admin(name, email, "newadmin", level);
+            AllUsers.Add(Admin);
+            Console.WriteLine($"An administrative account of level {level} has been opened for {name}");
         }
 
         public static User GetUserByID(int id)
@@ -292,18 +285,34 @@ namespace BankLedgerApi
             return null;
         }
 
-        public static List<User> GetAllAllUsers()
+        public static List<Customer> GetAllCustomers()
         {
-            List<User> AllCustomer = new List<User>();
+            List<Customer> AllCustomers = new List<Customer>();
             foreach (User customer in AllUsers)
             {
                 if (customer.GetType() == typeof(Customer))
                 {
-                    AllCustomer.Add(customer);
+                    
+                    AllCustomers.Add((Customer)customer);
                 }
             }
 
-            return AllCustomer.Count == 0 ? null : AllCustomer;
+            return AllCustomers.Count == 0 ? null : AllCustomers;
+        }
+        
+        public static List<Admin> GetAllAdmins()
+        {
+            List<Admin> AllAdmins = new List<Admin>();
+            foreach (User admin in AllUsers)
+            {
+                if (admin.GetType() == typeof(Admin))
+                {
+                    
+                    AllAdmins.Add((Admin)admin);
+                }
+            }
+
+            return AllAdmins.Count == 0 ? null : AllAdmins;
         }
 
         public static List<Account> GetAllAccounts()

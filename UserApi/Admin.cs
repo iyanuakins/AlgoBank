@@ -19,9 +19,9 @@ namespace UserApi
         public static int AdminCount { get => _AdminCount; set => _AdminCount = value; }
         public int Level { get; set; }
 
-        public void ManageAdmin(Admin admin)
+        public void ManageAdmin(int Level)
         {
-            
+            this.Level = Level;
         }
     }
 }
