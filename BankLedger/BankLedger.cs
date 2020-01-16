@@ -60,7 +60,7 @@ namespace BankLedgerApi
                     }
                     else if (AllUsers.Count != 0)
                     {
-                        foreach (User user in BankLedger.AllUsers)
+                        foreach (User user in AllUsers)
                         {
                             if (user.Email == email)
                             {
@@ -265,19 +265,12 @@ namespace BankLedgerApi
             return LoggedUser;
         }
 
-        public void CreateAdmin(Admin admin, string name, string email, int level = 1)
+        public static void CreateAdmin(string name, string email, int level = 1)
         {
-            if(admin.Level > 2)
-            {
-                //Create a super admin
-                User Admin = new Admin(name, email, "newadmin", level);
-                AllUsers.Add(Admin);
-                Console.WriteLine($"An administrative account of level {level} has been opened for {name}");
-            }
-            else
-            {
-                Console.WriteLine("Operation require higher clearance level");
-            }
+            //Create a super admin
+            User Admin = new Admin(name, email, "newadmin", level);
+            AllUsers.Add(Admin);
+            Console.WriteLine($"An administrative account of level {level} has been opened for {name}");
         }
 
         public static User GetUserByID(int id)

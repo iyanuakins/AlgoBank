@@ -1,10 +1,11 @@
 ﻿using System;
-//using TransactionApi;
+using TransactionApi;
 using AccountApi;
 using UserApi;
 using BankLedgerApi;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AlgoBank
 {
@@ -98,6 +99,7 @@ namespace AlgoBank
                                 switch (SecondSelectedOption)
                                 {
                                     case 1:
+                                        //Get all users
                                         List<Customer> AllCUstomers = BankLedger.GetAllAllUsers();
                                         if (AllCUstomers == null)
                                         {
@@ -116,6 +118,7 @@ namespace AlgoBank
                                         }
                                         break;
                                     case 2:
+                                        //Get all customer by ID
                                         bool IsValidOption2 = false;
                                         int UserID;
                                         do
@@ -145,6 +148,9 @@ namespace AlgoBank
                                         }
                                         break;
                                     case 3:
+                                        //Get all administrators
+                                        break;
+                                    case 4:
                                         //Get all accounts
                                         List<Account> AllAccounts = BankLedger.GetAllAccounts();
                                         if (AllAccounts == null)
@@ -166,25 +172,174 @@ namespace AlgoBank
                                             Console.WriteLine();
                                         }
                                         break;
-                                    case 4:
+                                    case 5:
+                                        //Get all accounts by type
                                         Console.Write("Enter account type to fetch: ");
                                         string AccountType = Console.ReadLine();
                                         List<Account> AllAccountType = BankLedger.GetAllAccountsByType(AccountType);
-                                        break;
-                                    case 5:
-                                        Console.WriteLine("Todo");
+                                        if (AllAccountType == null)
+                                        {
+                                            Console.WriteLine($"\nNo {AccountType} Account  created yet\n");
+                                        }
+                                        else
+                                        {
+                                            StringBuilder statement = new StringBuilder();
+                                            statement.AppendLine();
+                                            statement.AppendLine($"All {AccountType} Account in operation");
+                                            statement.AppendLine("| Account type | Account number |      Owner      | Date created |");
+                                            foreach (Account account in AllAccountType)
+                                            {
+                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", account.DateCreated);
+                                                statement.AppendLine($"| {account.Type} | {account.Number} | {account.OwnerName} |   {date}   |");
+                                            }
+                                            statement.AppendLine();
+                                            Console.WriteLine(statement.ToString());
+                                            Console.WriteLine();
+                                        }
+
                                         break;
                                     case 6:
-                                        Console.WriteLine("Todo");
+                                        //Get all transactions
+                                        List<Transaction> AllTransactions = BankLedger.GetAllTransactions();
+                                        if (AllTransactions == null)
+                                        {
+                                            Console.WriteLine($"\nNo recorded transaction yet\n");
+                                        }
+                                        else
+                                        {
+                                            StringBuilder statement = new StringBuilder();
+                                            statement.AppendLine();
+                                            statement.AppendLine("| Transaction ref num | Transaction type | Amount | Sender | Receiver | Transaction Date |");
+                                            foreach (Transaction transaction in AllTransactions)
+                                            {
+                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", transaction.DateCreated);
+                                                statement.AppendLine($"| {transaction.Id} | {transaction.Type} | {transaction.Amount} | {transaction.Sender} | {transaction.Receiver} | {date} |");
+                                            }
+                                            statement.AppendLine();
+                                            Console.WriteLine(statement.ToString());
+                                            Console.WriteLine();
+                                        }
                                         break;
                                     case 7:
-                                        Console.WriteLine("Todo");
+                                        //Get transction by reference number
+                                        Console.Write("Enter transction reference number: ");
+                                        string RefNumber = Console.ReadLine();
+                                        Transaction Result = null;
+                                        foreach (Transaction transaction in Transaction.AllTransactions)
+                                        {
+                                            if (transaction.Id == RefNumber)
+                                            {
+                                                Result = transaction;
+                                                break;
+                                            }
+                                        }
+                                        if (Result == null)
+                                        {
+                                            Console.WriteLine("\nTransaction not found\n");
+                                        }
+                                        else
+                                        {
+                                            StringBuilder statement = new StringBuilder();
+                                            statement.AppendLine();
+                                            statement.AppendLine("| Transaction ref num | Transaction type | Amount | Sender | Receiver | Transaction Date |");
+                                            string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", Result.DateCreated);
+                                            statement.AppendLine($"| {Result.Id} | {Result.Type} | {Result.Amount} | {Result.Sender} | {Result.Receiver} | {date} |");
+                                        }
                                         break;
                                     case 8:
                                         Console.WriteLine("Todo");
                                         break;
                                     case 9:
-                                        Console.WriteLine("Todo");
+                                        if (LoggedInUser.Level > 2)
+                                        {
+                                            bool IsAllValid = false;
+                                            bool IsContinue = false;
+                                            string name = "";
+                                            string email = "";
+                                            string password = "";
+                                            int Level;
+                                            do
+                                            {
+                                                bool IsValidName = false;
+
+                                                do
+                                                {
+                                                    Console.WriteLine("================================================================");
+                                                    Console.WriteLine("                     Fill Form to create a new admin                    ");
+                                                    Console.WriteLine("================================================================");
+
+                                                    Console.Write("Enter First name and Last name: ");
+                                                    name = Console.ReadLine();
+                                                    IsValidName = Regex.IsMatch(name, @"^[A-Za-z\s.\'\-]+$", RegexOptions.IgnoreCase);
+                                                    if (!IsValidName)
+                                                    {
+                                                        Console.WriteLine("\nPlease enter a valid name\n");
+                                                    }
+                                                } while (!IsValidName);
+
+                                                bool IsValidEmail = false;
+                                                do
+                                                {
+                                                    Console.Write("Enter email address: ");
+                                                    email = Console.ReadLine();
+                                                    IsValidEmail = Regex.IsMatch(email, @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
+                                                                                        @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-0-9a-z]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$",
+                                                                                        RegexOptions.IgnoreCase);
+                                                    if (!IsValidEmail)
+                                                    {
+                                                        Console.WriteLine("\nPlease enter a valid email address\n");
+                                                    }
+                                                    else if (BankLedger.AllUsers.Count != 0)
+                                                    {
+                                                        foreach (User user in BankLedger.AllUsers)
+                                                        {
+                                                            if (user.Email == email)
+                                                            {
+                                                                IsValidEmail = false;
+                                                                Console.WriteLine("\nEmail already in use by another customer\nTry another email or try to login\n");
+                                                                int option = 0;
+                                                                do
+                                                                {
+                                                                    Console.WriteLine("\nEnter 1 to try another email\nEnter 2 to exit admin registration process");
+                                                                    string UserInput = Console.ReadLine();
+                                                                    int SelectedOption;
+                                                                    bool IsValidInput = int.TryParse(UserInput, out SelectedOption);
+
+                                                                    if (IsValidInput && (SelectedOption == 1 || SelectedOption == 2))
+                                                                    {
+                                                                        option = SelectedOption;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        Console.WriteLine("\nInvalid option, Please select valid option\n");
+                                                                    }
+                                                                } while (option == 0);
+
+                                                                if (option == 2)
+                                                                {
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                } while (!IsValidEmail);
+
+                                                IsContinue = IsValidEmail && IsValidName;
+                                                if (!IsContinue)
+                                                {
+                                                    IsAllValid = true;
+                                                }
+                                            } while (!IsAllValid);
+
+                                            if (IsContinue)
+                                            {
+                                                BankLedger.CreateAdmin(name, email);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Operation require higher adminstrative level");
+                                        }
                                         break;
                                     default:
                                         Console.WriteLine();
