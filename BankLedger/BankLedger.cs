@@ -285,19 +285,34 @@ namespace BankLedgerApi
             return null;
         }
 
-        public static List<Customer> GetAllAllUsers()
+        public static List<Customer> GetAllCustomers()
         {
-            List<Customer> AllCustomer = new List<Customer>();
+            List<Customer> AllCustomers = new List<Customer>();
             foreach (User customer in AllUsers)
             {
                 if (customer.GetType() == typeof(Customer))
                 {
                     
-                    AllCustomer.Add((Customer)customer);
+                    AllCustomers.Add((Customer)customer);
                 }
             }
 
-            return AllCustomer.Count == 0 ? null : AllCustomer;
+            return AllCustomers.Count == 0 ? null : AllCustomers;
+        }
+        
+        public static List<Admin> GetAllAdmins()
+        {
+            List<Admin> AllAdmins = new List<Admin>();
+            foreach (User admin in AllUsers)
+            {
+                if (admin.GetType() == typeof(Admin))
+                {
+                    
+                    AllAdmins.Add((Admin)admin);
+                }
+            }
+
+            return AllAdmins.Count == 0 ? null : AllAdmins;
         }
 
         public static List<Account> GetAllAccounts()
