@@ -100,8 +100,8 @@ namespace AlgoBank
                                 {
                                     case 1:
                                         //Get all users
-                                        List<Customer> AllCUstomers = BankLedger.GetAllAllUsers();
-                                        if (AllCUstomers == null)
+                                        List<Customer> AllCustomers = BankLedger.GetAllCustomers();
+                                        if (AllCustomers == null)
                                         {
                                             Console.WriteLine("No registered customer yet.\n");
                                         }
@@ -109,7 +109,7 @@ namespace AlgoBank
                                         {
                                             StringBuilder ResultList = new StringBuilder();
                                             ResultList.AppendLine("| Customer ID |     Name      | Date Registered |");
-                                            foreach (Customer ThisCustomer in AllCUstomers)
+                                            foreach (Customer ThisCustomer in AllCustomers)
                                             {
                                                 string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", ThisCustomer.DateRegistered);
                                                 ResultList.AppendLine($"| {ThisCustomer.Id} |    {ThisCustomer.Name}    | {date} |");
@@ -149,6 +149,22 @@ namespace AlgoBank
                                         break;
                                     case 3:
                                         //Get all administrators
+                                        List<Admin> AllAdmins = BankLedger.GetAllAdmins();
+                                        if (AllAdmins == null)
+                                        {
+                                            Console.WriteLine("No registered customer yet.\n");
+                                        }
+                                        else
+                                        {
+                                            StringBuilder ResultList = new StringBuilder();
+                                            ResultList.AppendLine("| Customer ID |     Name      | Date Registered |");
+                                            foreach (Admin ThisAdmin in AllAdmins)
+                                            {
+                                                string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", ThisAdmin.DateRegistered);
+                                                ResultList.AppendLine($"| {ThisAdmin.Id} |    {ThisAdmin.Name}    | {date} |");
+                                            }
+                                            Console.WriteLine(ResultList.ToString());
+                                        }
                                         break;
                                     case 4:
                                         //Get all accounts
@@ -247,9 +263,69 @@ namespace AlgoBank
                                         }
                                         break;
                                     case 8:
-                                        Console.WriteLine("Todo");
+                                        //Manage Admins (Available to administrator with level 3)
+                                        if (LoggedInUser.Level > 2)
+                                        {
+                                            List<Admin> AdminsToManage = BankLedger.GetAllAdmins();
+                                            if (AdminsToManage == null || AdminsToManage.Count == 1)
+                                            {
+                                                Console.WriteLine("No Admins to manage.\n");
+                                            }
+                                            else
+                                            {
+                                                StringBuilder ResultList = new StringBuilder();
+                                                int i = 0;
+                                                foreach (Admin ThisAdmin in AdminsToManage)
+                                                {
+                                                    if (i != 0)
+                                                    {
+                                                        ResultList.AppendLine($"{++i})  =>  {ThisAdmin.Id} [{ThisAdmin.Name}]");
+                                                    }
+                                                }
+                                                bool IsValidAminSelection = false;
+                                                int SelectedAdminIndex;
+                                                do
+                                                {
+                                                    Console.WriteLine(ResultList.ToString());
+                                                    string AdminInputForOption = Console.ReadLine();
+                                                    IsValidAminSelection = int.TryParse(AdminInputForOption, out SelectedAdminIndex);
+                                                    if (!(IsValidAminSelection && (1 <= SelectedAdminIndex && SelectedAdminIndex <= AdminsToManage.Count - 2)))
+                                                    {
+                                                        IsValidAminSelection = false;
+                                                        Console.WriteLine("Invalid option, Please select valid option\n");
+                                                    }
+                                                    Admin SelectedAdmin = AdminsToManage[SelectedAdminIndex];
+                                                } while (!IsValidAminSelection);
+
+                                            }
+
+                                                bool IsValidManagementOption = false;
+                                                int PromptSelectedOption;
+                                                do
+                                                {
+                                                    Console.WriteLine("1)  =>  Promote admin\n" +
+                                                                      "2)  =>  Demote admin\n" +
+                                                                      "3)  =>   Suspend admin\n");
+                                                    string UserInputForOption = Console.ReadLine();
+                                                    IsValidManagementOption = int.TryParse(UserInputForOption, out PromptSelectedOption);
+                                                    if (!(IsValidManagementOption && (1 <=PromptSelectedOption && PromptSelectedOption <= 2)))
+                                                    {
+                                                        IsValidManagementOption = false;
+                                                        Console.WriteLine("Invalid option, Please select valid option\n");
+                                                    }
+                                                } while (!IsValidManagementOption);
+                                                if (PromptSelectedOption == 1)
+                                                {
+                                                
+                                                }
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("\nOperation require higher adminstrative level\n");
+                                        }
                                         break;
                                     case 9:
+                                        //Create Admins (Available to administrator with level 3)
                                         if (LoggedInUser.Level > 2)
                                         {
                                             bool IsAllValid = false;
@@ -344,7 +420,7 @@ namespace AlgoBank
                                     default:
                                         Console.WriteLine();
                                         Console.WriteLine("====================================================");
-                                        Console.WriteLine($"{LoggedInUser.Name}, you are now logged out\n");
+                                        Console.WriteLine($"Admin {LoggedInUser.Name}, you are now logged out");
                                         Console.WriteLine("====================================================");
                                         LoggedInUser = null;
                                         IsUserSessionOn = false;
@@ -507,7 +583,8 @@ namespace AlgoBank
                                                     int PromptSelectedOption;
                                                     do
                                                     {
-                                                        Console.WriteLine("Enter 1 to re-enter\nEnter 2 to exit transfer process\n");
+                                                        Console.WriteLine("1)  =>  Re-enter account number\n" +
+                                                                          "2)  =>  Exit transfer process\n");
                                                         string UserInputForOption = Console.ReadLine();
                                                         IsValidOption2 = int.TryParse(UserInputForOption, out PromptSelectedOption);
                                                         if (!(IsValidOption2 && (PromptSelectedOption == 1 || PromptSelectedOption == 2)))
@@ -544,7 +621,7 @@ namespace AlgoBank
                                     default:
                                         Console.WriteLine();
                                         Console.WriteLine("====================================================");
-                                        Console.WriteLine($"{LoggedInUser.Name} thanks for banking with us\n");
+                                        Console.WriteLine($"{LoggedInUser.Name} thanks for banking with us");
                                         Console.WriteLine("====================================================");
                                         LoggedInUser = null;
                                         IsUserSessionOn = false;
