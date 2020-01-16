@@ -5,17 +5,17 @@ namespace TransactionApi
 {
     public class Transaction
     {
-        private string _type;
-        private double _amount;
-        private string _currency;
-        private DateTime _DateCreated = DateTime.Now;
-        private string _SourceAccount;
-        private string _SourceAccountType;
-        private string _DestinationAccount;
-        private string _DestinationAccountType;
-        private string _sender;
-        private string _receiver;
-        private string _Id;
+        private readonly string _type;
+        private readonly double _amount;
+        private readonly string _currency;
+        private readonly DateTime _DateCreated = DateTime.Now;
+        private readonly string _SourceAccount;
+        private readonly string _SourceAccountType;
+        private readonly string _DestinationAccount;
+        private readonly string _DestinationAccountType;
+        private readonly string _sender;
+        private readonly string _receiver;
+        private readonly string _Id;
         public static int TransactionCounter = 1000107;
         private static List<Transaction> _AllTransactions = new List<Transaction>();
 

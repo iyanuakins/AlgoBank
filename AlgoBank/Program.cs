@@ -52,20 +52,23 @@ namespace AlgoBank
                         if (AuthenticatedUser.GetType() == typeof(Admin))
                         {
                             Admin LoggedInUser = (Admin)AuthenticatedUser;
-                            int[] AccountCount = BankLedger.GetTotalAccountCount();
-                            Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
-                            Console.WriteLine("================================================================");
-                            Console.WriteLine("                           Bank ledger summary            ");
-                            Console.WriteLine("================================================================"); 
-                            Console.WriteLine($"A total of {Customer.TotalCustomer} customer(s) are operating a total of {AccountCount[3]} account(s)\n" +
-                                                "Breakdown:\n" +
-                                                $"Savings accounts: {AccountCount[0]}\n" +
-                                                $"Current accounts: {AccountCount[1]}\n" +
-                                                $"Domiciliary accounts: {AccountCount[2]}\n" +
-                                                "\n" +
-                                                $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
-                                                "\n");
-                            do
+                            //Check if the admin is not supended
+                            if(LoggedInUser.Level > 0)
+                            {
+                                int[] AccountCount = BankLedger.GetTotalAccountCount();
+                                Console.WriteLine($"Welcome Admin {LoggedInUser.Name}\n");
+                                Console.WriteLine("================================================================");
+                                Console.WriteLine("                           Bank ledger summary            ");
+                                Console.WriteLine("================================================================"); 
+                                Console.WriteLine($"A total of {Customer.TotalCustomer} customer(s) are operating a total of {AccountCount[3]} account(s)\n" +
+                                                    "Breakdown:\n" +
+                                                    $"Savings accounts: {AccountCount[0]}\n" +
+                                                    $"Current accounts: {AccountCount[1]}\n" +
+                                                    $"Domiciliary accounts: {AccountCount[2]}\n" +
+                                                    "\n" +
+                                                    $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
+                                                    "\n");
+                                do
                             {
                                 int SecondSelectedOption;
                                 bool IsValidOption = false;
@@ -267,6 +270,7 @@ namespace AlgoBank
                                         if (LoggedInUser.Level > 2)
                                         {
                                             List<Admin> AdminsToManage = BankLedger.GetAllAdmins();
+                                            //Excluding super admin from the management
                                             if (AdminsToManage == null || AdminsToManage.Count == 1)
                                             {
                                                 Console.WriteLine("No Admins to manage.\n");
@@ -277,47 +281,68 @@ namespace AlgoBank
                                                 int i = 0;
                                                 foreach (Admin ThisAdmin in AdminsToManage)
                                                 {
+                                                    //Excluding the super admin from the list of admins to be displayed.
                                                     if (i != 0)
                                                     {
-                                                        ResultList.AppendLine($"{++i})  =>  {ThisAdmin.Id} [{ThisAdmin.Name}]");
+                                                        string AdminType = ThisAdmin.Level < 3 ? "Ordinary Administrator" : "Super Administrator"; 
+                                                        ResultList.AppendLine($"{i})  =>  {ThisAdmin.Name}[{AdminType}]");
                                                     }
+                                                    i++;
                                                 }
+                                                //Prompt admin to for admin selection
                                                 bool IsValidAminSelection = false;
                                                 int SelectedAdminIndex;
+                                                Admin SelectedAdmin;
                                                 do
                                                 {
                                                     Console.WriteLine(ResultList.ToString());
                                                     string AdminInputForOption = Console.ReadLine();
                                                     IsValidAminSelection = int.TryParse(AdminInputForOption, out SelectedAdminIndex);
+
+                                                    //Deducting 2 from the {AdminsToManage.Count} to exclude Super admin index
                                                     if (!(IsValidAminSelection && (1 <= SelectedAdminIndex && SelectedAdminIndex <= AdminsToManage.Count - 2)))
                                                     {
                                                         IsValidAminSelection = false;
                                                         Console.WriteLine("Invalid option, Please select valid option\n");
                                                     }
-                                                    Admin SelectedAdmin = AdminsToManage[SelectedAdminIndex];
+                                                    //Getting the admin selected for management
+                                                    SelectedAdmin = AdminsToManage[SelectedAdminIndex];
                                                 } while (!IsValidAminSelection);
 
-                                            }
-
+                                                //Prompt admin to for action
                                                 bool IsValidManagementOption = false;
                                                 int PromptSelectedOption;
                                                 do
                                                 {
-                                                    Console.WriteLine("1)  =>  Promote admin\n" +
-                                                                      "2)  =>  Demote admin\n" +
+                                                    Console.WriteLine("1)  =>  Promote to super admin\n" +
+                                                                      "2)  =>  Demote to ordinary admin\n" +
                                                                       "3)  =>   Suspend admin\n");
                                                     string UserInputForOption = Console.ReadLine();
                                                     IsValidManagementOption = int.TryParse(UserInputForOption, out PromptSelectedOption);
-                                                    if (!(IsValidManagementOption && (1 <=PromptSelectedOption && PromptSelectedOption <= 2)))
+                                                    if (!(IsValidManagementOption && (1 <= PromptSelectedOption && PromptSelectedOption <= 2)))
                                                     {
                                                         IsValidManagementOption = false;
                                                         Console.WriteLine("Invalid option, Please select valid option\n");
                                                     }
                                                 } while (!IsValidManagementOption);
+
+                                                //Perform operation based on the prompt selected
                                                 if (PromptSelectedOption == 1)
                                                 {
-                                                
+                                                    SelectedAdmin.ManageAdmin(3);
+                                                    Console.WriteLine($"{SelectedAdmin.Name} has been promoted to super admin");
                                                 }
+                                                else if (PromptSelectedOption == 2)
+                                                {
+                                                    SelectedAdmin.ManageAdmin(1);
+                                                    Console.WriteLine($"{SelectedAdmin.Name} has been demoted to ordinary admin");
+                                                }
+                                                else
+                                                {
+                                                    SelectedAdmin.ManageAdmin(0);
+                                                    Console.WriteLine($"{SelectedAdmin.Name} has been suspended");
+                                                }
+                                            } 
                                         }
                                         else
                                         {
@@ -332,8 +357,6 @@ namespace AlgoBank
                                             bool IsContinue = false;
                                             string name = "";
                                             string email = "";
-                                            string password = "";
-                                            int Level;
                                             do
                                             {
                                                 bool IsValidName = false;
@@ -427,6 +450,13 @@ namespace AlgoBank
                                         break;
                                 }
                             } while (IsUserSessionOn);
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nYour account has been suspended\n");
+                                IsUserSessionOn = false;
+                            }
+
                         }
                         else
                         {
