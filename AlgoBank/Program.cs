@@ -147,7 +147,7 @@ namespace AlgoBank
                                             Console.WriteLine($"Customer ID: {customer.Id}");
                                             Console.WriteLine($"Customer name: {customer.Name}");
                                             Console.WriteLine("All Account operated by this user\n");
-                                            //customer.GetAccountOverview();
+                                            customer.GetAccountsOverview();
                                         }
                                         break;
                                     case 3:
@@ -513,7 +513,7 @@ namespace AlgoBank
                                         Console.WriteLine($"Your Account balance is: {balance}\n");
                                         break;
                                     case 2:
-                                        Console.WriteLine("Todo");
+                                        LoggedInUser.GetAccountsOverview();
                                         break;
                                     case 3:
                                         SelectedAccount = LoggedInUser.Accounts.Count == 1 ? LoggedInUser.Accounts[0] : LoggedInUser.SelectAccount();
