@@ -263,6 +263,8 @@ namespace AlgoBank
                                             statement.AppendLine("| Transaction ref num | Transaction type | Amount | Sender | Receiver | Transaction Date |");
                                             string date = string.Format("{0: dd-MM-yyyy HH:mm:ss}", Result.DateCreated);
                                             statement.AppendLine($"| {Result.Id} | {Result.Type} | {Result.Amount} | {Result.Sender} | {Result.Receiver} | {date} |");
+                                            Console.WriteLine();
+                                            Console.WriteLine(statement.ToString());
                                         }
                                         break;
                                     case 8:
@@ -297,10 +299,8 @@ namespace AlgoBank
                                                 {
                                                     Console.WriteLine(ResultList.ToString());
                                                     string AdminInputForOption = Console.ReadLine();
-                                                    IsValidAminSelection = int.TryParse(AdminInputForOption, out SelectedAdminIndex);
-
-                                                    //Deducting 2 from the {AdminsToManage.Count} to exclude Super admin index
-                                                    if (!(IsValidAminSelection && (1 <= SelectedAdminIndex && SelectedAdminIndex <= AdminsToManage.Count - 2)))
+                                                        IsValidAminSelection = int.TryParse(AdminInputForOption, out SelectedAdminIndex);
+                                                    if (!(IsValidAminSelection && (1 <= SelectedAdminIndex && SelectedAdminIndex <= AdminsToManage.Count - 1)))
                                                     {
                                                         IsValidAminSelection = false;
                                                         Console.WriteLine("Invalid option, Please select valid option\n");
@@ -354,7 +354,7 @@ namespace AlgoBank
                                         if (LoggedInUser.Level > 2)
                                         {
                                             bool IsAllValid = false;
-                                            bool IsContinue = false;
+                                            bool IsContinue = true;
                                             string name = "";
                                             string email = "";
                                             do
@@ -424,10 +424,7 @@ namespace AlgoBank
                                                 } while (!IsValidEmail);
 
                                                 IsContinue = IsValidEmail && IsValidName;
-                                                if (!IsContinue)
-                                                {
-                                                    IsAllValid = true;
-                                                }
+                                                IsAllValid = true;
                                             } while (!IsAllValid);
 
                                             if (IsContinue)
@@ -465,7 +462,6 @@ namespace AlgoBank
                             Console.Write($"Welcome {LoggedInUser.Name} ");
                             if (LoggedInUser.Accounts.Count == 0)
                             {
-                                Console.WriteLine();
                                 Console.WriteLine("We are happy to have you on board.\n");
                                 Console.WriteLine("Please open your first account\n");
                                 LoggedInUser.CreateAccount();

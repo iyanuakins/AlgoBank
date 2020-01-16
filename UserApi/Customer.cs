@@ -29,7 +29,7 @@ namespace UserApi
                 int i = 0;
                 foreach (Account account in Accounts)
                 {
-                    string line = $"{++i})    {account.Number} [{account.Type}]";
+                    string line = $"{++i}) =>   {account.Number} [{account.Type}]";
                     AccountNumbers.AppendLine(line);
                 }
                 Console.WriteLine();
