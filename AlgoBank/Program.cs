@@ -84,8 +84,8 @@ namespace AlgoBank
                                                        "3) => View all administrators\n" +
                                                        "4) => View all bank accounts\n" +
                                                        "5) => View bank accounts by type\n" +
-                                                       "6) => View all transctions\n" +
-                                                       "7) => View transction by reference number\n" +
+                                                       "6) => View all transactions\n" +
+                                                       "7) => View transaction by reference number\n" +
                                                        $"8) => {ManageAdmin}\n" +
                                                        $"9) => {CreateAdmin}\n" +
                                                        "0) => Log out\n");
