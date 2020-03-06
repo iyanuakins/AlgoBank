@@ -1,11 +1,12 @@
-﻿using System;
-using TransactionApi;
-using AccountApi;
-using UserApi;
+﻿using AccountApi;
 using BankLedgerApi;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using TransactionApi;
+using UserApi;
+using DatabaseLibrary;
 
 namespace AlgoBank
 {
@@ -13,6 +14,8 @@ namespace AlgoBank
     {
         static void Main(string[] args)
         {
+            string[] files = {"accounts", "transactions", "users"};
+            Database<int>.Initialize(files);
             Console.WriteLine("Welcome to Algo Bank\n");
             bool IsUserSessionOn = false;
             BankLedger.RegisterSuperAdmin();
@@ -67,15 +70,15 @@ namespace AlgoBank
                                                     $"Domiciliary accounts: {AccountCount[2]}\n" +
                                                     "\n" +
                                                     $"Total Amount in bank: NGN{Account.TotalAmountInBank}\n" +
-                                                    "\n");
-                                do
+                                                    "\n"); 
+                            do
                             {
                                 int SecondSelectedOption;
                                 bool IsValidOption = false;
                                 do
                                 {
-                                    string CreateAdmin = LoggedInUser.Level < 3 ? "Create Admins (Unavailbale)" : "Create Admins";
-                                    string ManageAdmin = LoggedInUser.Level < 3 ? "Manage Admins (Unavailbale)" : "Manage Admins";
+                                    string CreateAdmin = LoggedInUser.Level < 3 ? "Create Admins (Unavailable)" : "Create Admins";
+                                    string ManageAdmin = LoggedInUser.Level < 3 ? "Manage Admins (Unavailable)" : "Manage Admins";
                                     Console.WriteLine("============================================");
                                     Console.WriteLine("             Available Operations         ");
                                     Console.WriteLine("=============================================");

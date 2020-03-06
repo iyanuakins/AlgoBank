@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Account\AccountApi.csproj" />
     <ProjectReference Include="..\BankLedger\BankLedgerApi.csproj" />
+    <ProjectReference Include="..\DatabaseLibrary\DatabaseLibrary.csproj" />
     <ProjectReference Include="..\TransactionApi\TransactionApi.csproj" />
     <ProjectReference Include="..\UserApi\UserApi.csproj" />
   </ItemGroup>
